@@ -25,7 +25,7 @@ import static java.lang.Math.*;
 
 public class Board extends Application {
     private static final double KEYFRAME_DURATION_TIME = 0.026; // seconds
-    private static final int NUMBER_OF_PLAYERS = 3;
+    private static final int NUMBER_OF_PLAYERS = 2;
     private static final int WIDTH = 900;
     private static final int HEIGHT = 700;
     private static final long START_DRAWING_DELAY = 1500; // milliseconds
@@ -35,7 +35,9 @@ public class Board extends Application {
     private static final long MAX_TIME_OF_DELAY = 400; // milliseconds
     private static final double END_CIRCLE_RADIUS = 1.0;
     private static final double LINE_WIDTH = 2.0;
+    private static final double BOUNDS_WIDTH = 4.0;
     private static final String TITLE = "Curve fever!";
+    private static final Color BOUNDS_COLOR = Color.BLACK;
     private static int currentNumberOfPlayers = NUMBER_OF_PLAYERS;
     private final Timer timer = new Timer();
     private final Timeline timeline = new Timeline();
@@ -176,6 +178,13 @@ public class Board extends Application {
     }
 
     private void drawLines(Player player) {
+        // draw boundaries
+        gc.setStroke(BOUNDS_COLOR);
+        gc.setLineWidth(BOUNDS_WIDTH);
+        gc.strokeLine(0, 0, 0, HEIGHT);
+        gc.strokeLine(0, HEIGHT, WIDTH, HEIGHT);
+        gc.strokeLine(WIDTH, HEIGHT, WIDTH, 0);
+        gc.strokeLine(WIDTH, 0, 0, 0);
         List<Point> visited = player.getVisited();
         if (visited.size() > 1) {
             gc.setStroke(player.getColor());
