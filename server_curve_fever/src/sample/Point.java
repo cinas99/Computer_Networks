@@ -1,5 +1,7 @@
 package sample;
 
+//// ALL THE SAME /////
+
 public class Point {
     private boolean gap;
     private double x;

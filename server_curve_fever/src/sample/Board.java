@@ -33,19 +33,21 @@ public class Board extends Application {
     private static final long MAX_TIME_OF_DRAWING = 6000; // milliseconds
     private static final long MIN_TIME_OF_DELAY = 200; // milliseconds
     private static final long MAX_TIME_OF_DELAY = 400; // milliseconds
-    private static final double END_CIRCLE_RADIUS = 1.0;
-    private static final double LINE_WIDTH = 2.0;
-    private static final double BOUNDS_WIDTH = 4.0;
-    private static final String TITLE = "Curve fever!";
-    private static final Color BOUNDS_COLOR = Color.BLACK;
+    //private static final double END_CIRCLE_RADIUS = 1.0;
+    //private static final double LINE_WIDTH = 2.0;
+    //private static final double BOUNDS_WIDTH = 4.0;
+    //private static final String TITLE = "Curve fever!";
+    //private static final Color BOUNDS_COLOR = Color.BLACK;
     private static int currentNumberOfPlayers = NUMBER_OF_PLAYERS;
     private final Timer timer = new Timer();
     private final Timeline timeline = new Timeline();
-    private Group root = new Group();
-    private Scene scene = new Scene(root, WIDTH, HEIGHT);
-    private Canvas canvas = new Canvas(WIDTH, HEIGHT);
-    private GraphicsContext gc = canvas.getGraphicsContext2D();
+    //private Group root = new Group();
+    //private Scene scene = new Scene(root, WIDTH, HEIGHT);
+    //private Canvas canvas = new Canvas(WIDTH, HEIGHT);
+    //private GraphicsContext gc = canvas.getGraphicsContext2D();
     private Player [] player;
+
+    // WHOLE METHOD MINE COPY PASTE
 
     private void startDrawing() {
         for (Player p : player) {
@@ -60,6 +62,8 @@ public class Board extends Application {
             }
         }, time);
     }
+
+    // WHOLE METHOD MINE COPY PASTE
 
     private void stopDrawing() {
         for (Player p : player) {
@@ -76,9 +80,13 @@ public class Board extends Application {
         }, time);
     }
 
+    // WHOLE METHOD MINE COPY PASTE
+
     private static boolean outOfBounds(Point p) {
         return (p.getX() > WIDTH || p.getX() < 0 || p.getY() > HEIGHT || p.getY() < 0);
     }
+
+    // WHOLE METHOD MINE COPY PASTE//
 
     private static boolean areIntersecting(Point p1, Point p2, Point q1, Point q2) {
         final boolean result;
@@ -130,6 +138,8 @@ public class Board extends Application {
         return result;
     }
 
+    // ? w Serwerze //TODO LATER //
+
     private void showResults() {
         int winnerIndex = -1;
         for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
@@ -145,10 +155,12 @@ public class Board extends Application {
         alert.show();
     }
 
+    // WHOLE METHOD MINE //
+
     private void checkCollision() {
         for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
             if (!player[i].isNowPlaying()) continue;
-            final List <Point> iVisited = player[i].getVisited();
+            final List <Point> iVisited = player[i].getVisited(); // wektory !
             if (iVisited.size() > 1) {
                 Point last = iVisited.get(iVisited.size() - 1);
                 Point nextToLast = iVisited.get(iVisited.size() - 2);
@@ -177,6 +189,7 @@ public class Board extends Application {
         System.out.println(mySize);
     }
 
+    /*
     private void drawLines(Player player) {
         // draw boundaries
         gc.setStroke(BOUNDS_COLOR);
@@ -201,6 +214,9 @@ public class Board extends Application {
             gc.fillOval(player.getCurrentX() - r, player.getCurrentY() - r, 2 * r, 2 * r);
         }
     }
+        */
+
+    // WHOLE METHOD MINE //
 
     private void initPlayers(final int maxNumberOfPlayers) {
         player = new Player[maxNumberOfPlayers];
@@ -226,7 +242,7 @@ public class Board extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        root.getChildren().add(canvas);
+        //root.getChildren().add(canvas);
         initPlayers(NUMBER_OF_PLAYERS);
         timer.schedule(new TimerTask() {
 
@@ -235,9 +251,9 @@ public class Board extends Application {
                 startDrawing();
             }
         }, START_DRAWING_DELAY);
-        for (int i=0; i < NUMBER_OF_PLAYERS; i++) {
-            this.drawLines(player[i]);
-        }
+        //for (int i=0; i < NUMBER_OF_PLAYERS; i++) {
+        //    this.drawLines(player[i]);
+        //}
         timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(KEYFRAME_DURATION_TIME), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -245,15 +261,15 @@ public class Board extends Application {
                     player[i].generateNextLine();
                 }
                 checkCollision();
-                gc.clearRect(0, 0, WIDTH, HEIGHT);
-                for (int i=0; i < NUMBER_OF_PLAYERS; i++) {
-                    drawLines(player[i]);
-                }
+               // gc.clearRect(0, 0, WIDTH, HEIGHT);
+               // for (int i=0; i < NUMBER_OF_PLAYERS; i++) {
+                //    drawLines(player[i]);
+               // }
             }
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
 
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        /*scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode().ordinal() == KeyCode.LEFT.ordinal() && NUMBER_OF_PLAYERS > 0) {
@@ -314,10 +330,14 @@ public class Board extends Application {
                 event.consume();
             }
         });
+*/
+      //  primaryStage.setTitle(TITLE);
+       // primaryStage.setScene(scene);
+       // primaryStage.show();
 
-        primaryStage.setTitle(TITLE);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+
         timeline.play();
+
+
     }
 }

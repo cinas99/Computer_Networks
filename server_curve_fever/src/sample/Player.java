@@ -8,10 +8,13 @@ import java.util.List;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
+//////////////// CALA KLASA COPY PASTE ///////////////////////////
+
+
 public class Player {
     private final static double LINEAR_SPEED = 2.8;
     private final static double CIRCULAR_SPEED = 0.12;
-    private final List <Point> visited = new ArrayList<Point>();
+    private final List <Point> visited = new ArrayList<Point>(); // wektor typu point
     private final Color color;
     private double currentX;
     private double currentY;
