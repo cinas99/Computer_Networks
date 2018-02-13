@@ -1,18 +1,22 @@
-package sample;
+package pl.poznan.put.client;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.*;
+import java.util.Properties;
 
 public class UdpClient {
     private DatagramSocket sock;
     private InetSocketAddress addr;
     private int port;
 
-    public UdpClient() throws SocketException, UnknownHostException {
+    public UdpClient() throws IOException {
+        Properties props = new Properties();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(UdpClient.class.getResourceAsStream("config.properties")));
+        props.load(reader);
+
         sock = new DatagramSocket();
-        port = 9020;
-        addr = new InetSocketAddress("192.168.0.21", port);
+        port = Integer.parseInt(props.getProperty("port"));
+        addr = new InetSocketAddress(props.getProperty("ip"), port);
     }
 
     public void receive() throws IOException {
