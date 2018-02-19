@@ -29,9 +29,9 @@ public:
     std::string getNick();
     int getClientSocket();
     void setInRoom(bool inRoom);
-    bool getInRoom();
+    bool isInRoom();
     void setReady(bool ready);
-    bool getReady();
+    bool isReady();
 };
 
 #endif

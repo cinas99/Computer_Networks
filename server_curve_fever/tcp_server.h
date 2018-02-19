@@ -24,13 +24,16 @@
 #define SERVER_PORT 9022
 
 enum Message{
-    DECLINE,
+    UNJOIN,
     TURN_ON,
     JOIN,
     LEAVE,
     READY,
+    UNREADY,
     START,
-    ROOM_EVENT
+    ROOM_EVENT,
+    TRUE,
+    FALSE
 };
 
 class TcpServer {

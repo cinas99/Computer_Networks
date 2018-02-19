@@ -4,6 +4,7 @@ Player::Player(int clientSocket, sockaddr_in sockAddrClient) {
     this->sockAddrClient = sockAddrClient;
     this->clientSocket = clientSocket;
     this->inRoom = false;
+    this->ready = false;
 }
 
 void Player::setNick(std::string nick) {
@@ -22,7 +23,7 @@ void Player::setInRoom(bool inRoom) {
     this->inRoom = inRoom;
 }
 
-bool Player::getInRoom() {
+bool Player::isInRoom() {
     return inRoom;
 }
 
@@ -30,6 +31,6 @@ void Player::setReady(bool ready) {
     this->ready = ready;
 }
 
-bool Player::getReady() {
+bool Player::isReady() {
     return ready;
 }

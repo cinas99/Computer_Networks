@@ -43,7 +43,15 @@ void GameServer::clientReceive(int clientSocket, sockaddr_in sockAddrClient) {
                 m.lock();
                 player.setReady(true);
                 m.unlock();
+                queue.push(ROOM_EVENT);
                 cout << "Receive: Ready (clientsocket) " << clientSocket << endl << endl;
+                break;
+            case UNREADY:
+                m.lock();
+                player.setReady(false);
+                m.unlock();
+                queue.push(ROOM_EVENT);
+                cout << "Receive: Uneady (clientsocket) " << clientSocket << endl << endl;
                 break;
         }
     }

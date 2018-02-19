@@ -33,13 +33,4 @@ template<class T> T SafeQueue<T>::get() {
     return val;
 }
 
-/*typedef void (TcpServer::*Task) (int clientSocket, std::vector<Player*> connectedPlayers);
-
-struct SendTask {
-    Task task;
-    TcpServer *tcpServer;
-    int clientSocket;
-    std::vector <Player*> connectedPlayers;
-};*/
-
 #endif //SERVER_CURVE_FEVER_SAFE_QUEUE_H
