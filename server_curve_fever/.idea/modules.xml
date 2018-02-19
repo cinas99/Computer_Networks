@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/server_curve_fever.iml" filepath="$PROJECT_DIR$/server_curve_fever.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/CLion Project.iml" filepath="$PROJECT_DIR$/.idea/CLion Project.iml" />
     </modules>
   </component>
 </project>

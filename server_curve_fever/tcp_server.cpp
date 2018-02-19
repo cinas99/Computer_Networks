@@ -108,7 +108,7 @@ void TcpServer::roomEventSend(int clientSocket, std::vector<Player*> connectedPl
     sendInt(clientSocket, playersInRoom);
     for (std::vector<Player*>::iterator it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
         if ((*it)->getInRoom()) {
-            sendString((*it)->getClientSocket(), (*it)->getNick());
+            sendString(clientSocket, (*it)->getNick());
         }
     }
 }
@@ -130,21 +130,23 @@ bool TcpServer::joinSend(int clientSocket, std::vector<Player*> connectedPlayers
 }
 
 void TcpServer::send(int clientSocket, const char* msg) {
-    std::cout << "send: " << msg << std::endl;
+    std::cout << "send: (clientSocket) " << clientSocket << " (msg) " <<  msg << std::endl;
     char buf[BUF_SIZE];
-    int msgLen = sprintf(buf, "%s\n", msg);
+    int msgLen = sprintf(buf, "%s", msg);
+    sendInt(clientSocket, msgLen);
     write(clientSocket, buf, msgLen);
 }
 
 void TcpServer::sendString(int clientSocket, std::string msg) {
-    std::cout << "sendString: " << msg << std::endl;
+    std::cout << "sendString: (clientSocket) " << clientSocket << " (msg) " <<  msg << std::endl;
     char buf[BUF_SIZE];
-    int msgLen = sprintf(buf, "%s\n", msg.c_str());
+    int msgLen = sprintf(buf, "%s", msg.c_str());
+    sendInt(clientSocket, msgLen);
     write(clientSocket, buf, msgLen);
 }
 
 void TcpServer::sendInt(int clientSocket, int num) {
-    std::cout << "sendInt: " << num << std::endl;
+    std::cout << "sendInt: (clientSocket) " << clientSocket << " (num) " <<  num << std::endl;
     int32_t convertedNum = htonl(num);
     char *buf = (char*)&convertedNum;
     write(clientSocket, buf, sizeof(convertedNum));

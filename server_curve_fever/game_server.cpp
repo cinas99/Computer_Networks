@@ -8,7 +8,7 @@ void GameServer::clientReceive(int clientSocket, sockaddr_in sockAddrClient) {
     SafeQueue <Message> queue;
     while (true) {
         int msg = tcpServer.receiveInt(clientSocket);
-        cout << "Receive: (clientsocket) " << clientSocket << " (msg) " << msg << endl;
+        cout << "ClientReceive: (clientsocket) " << clientSocket << " (msg) " << msg << endl;
         switch(msg) {
             case TURN_ON:
             {
@@ -53,10 +53,11 @@ void GameServer::clientSend(Player *player, SafeQueue <Message> *queue) {
     const int clientSocket = player->getClientSocket();
     while(true) {
         Message message = queue->get();
-        cout << "Send: (clientsocket) " << clientSocket << " (message) " << message << endl;
+        cout << "ClientSend: (clientsocket) " << clientSocket << " (message) " << message << endl;
         switch (message) {
             case TURN_ON:
                 tcpServer.turnOnSend(clientSocket, connectedPlayers);
+                queue->push(ROOM_EVENT);
                 cout << "Send: Turn on (clientsocket) " << clientSocket << endl << endl;
                 break;
             case JOIN:
