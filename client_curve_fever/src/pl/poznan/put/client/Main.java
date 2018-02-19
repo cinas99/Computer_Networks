@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    private static final String TITLE = "Curve fever!";
+    private static final String TITLE = "Curve fever! - Main Menu";
     private static final int WIDTH = 630;
     private static final int HEIGHT = 270;
     private static FXMLLoader loader;

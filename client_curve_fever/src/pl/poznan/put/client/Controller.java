@@ -21,6 +21,7 @@ public class Controller {
     @FXML private TextField room3;
     @FXML private TextField room4;
     private TcpClient tcpClient;
+    private Board board;
     //private UdpClient client;
     private boolean inside;
 
@@ -50,6 +51,7 @@ public class Controller {
 
     public void shutdown() {
         try {
+            tcpClient.leaveSend();
             tcpClient.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -59,18 +61,25 @@ public class Controller {
     @FXML protected void handleJoinButton(ActionEvent event) {
         try {
             if (inside) {
+                //join.setText("Dołącz do pokoju");
+                //start.setDisable(true);
+                //nick.setDisable(false);
+                tcpClient.leaveSend();
                 join.setText("Dołącz do pokoju");
                 start.setDisable(true);
                 nick.setDisable(false);
-                tcpClient.leaveSend();
+                if (board != null) {
+                    board.close();
+                }
+                inside = false;
             }
             else {
-                join.setText("Opuść pokój");
-                start.setDisable(false);
-                nick.setDisable(true);
+                //join.setText("Opuść pokój");
+                //start.setDisable(false);
+                //nick.setDisable(true);
                 tcpClient.joinSend(nick.getText());
             }
-            inside = !inside;
+            //inside = !inside;
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -80,18 +89,57 @@ public class Controller {
     @FXML protected void handleStartButton(ActionEvent event) {
         try {
             tcpClient.readySend();
-            Board board = new Board();
+            if (board == null || !board.isVisible()) {
+                board = new Board(tcpClient);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    protected void refreshRoom(List<String> playerNicks) {
-        int size = playerNicks.size();
-        room1.setText(size < 1 ? "" : playerNicks.get(0));
-        //room1.setStyle("-fx-text-fill: green;");
-        room2.setText(size < 2 ? "" : playerNicks.get(1));
-        room3.setText(size < 3 ? "" : playerNicks.get(2));
-        room4.setText(size < 4 ? "" : playerNicks.get(3));
+    protected void handleUnjoinRoom() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                join.setText("Dołącz do pokoju");
+                start.setDisable(true);
+                nick.setDisable(false);
+                inside = false;
+            }
+        });
+    }
+
+    protected void handleJoinRoom() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                join.setText("Opuść pokój");
+                start.setDisable(false);
+                nick.setDisable(true);
+                inside = true;
+            }
+        });
+    }
+
+    protected void refreshRoom(List<NickField> nickFields) {
+        int size = nickFields.size();
+        refreshTextField(room1, nickFields,0, size);
+        refreshTextField(room2, nickFields,1, size);
+        refreshTextField(room3, nickFields,2, size);
+        refreshTextField(room4, nickFields,3, size);
+    }
+
+    private void refreshTextField(TextField textField, List<NickField> nickFields, int num, int size) {
+        if (num < size) {
+            final NickField nickField = nickFields.get(num);
+            textField.setText(nickField.getNick());
+            if (nickField.isReady())
+                textField.setStyle("-fx-text-fill: green;");
+            else
+                textField.setStyle("-fx-text-fill: black;");
+        }
+        else {
+            textField.setText("");
+        }
     }
 }

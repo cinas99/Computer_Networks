@@ -29,6 +29,11 @@ public class TcpClient {
                             break;
                         case JOIN:
                             System.out.println("ReceivingThread: Joined to room!\n");
+                            TcpClient.this.joinReceive();
+                            break;
+                        case UNJOIN:
+                            System.out.println("ReceivingThread: Room is full!\n");
+                            TcpClient.this.unjoinReceive();
                             break;
                         case ROOM_EVENT:
                             System.out.println("ReceivingThread: Room event received!\n");
@@ -56,16 +61,17 @@ public class TcpClient {
         dataOutputStream = new DataOutputStream(sock.getOutputStream());
     }
 
-    private List <String> getPlayerNicks() throws IOException {
+    private List <NickField> getNickFields() throws IOException {
         int numberOfPlayers = receiveInt();
-        List <String> playerNicks = new ArrayList<String>();
-        System.out.println("SendingThread: (number of players) " + numberOfPlayers);
+        List <NickField> nickFields = new ArrayList<NickField>();
+        System.out.println("ReceivingThread: (number of players) " + numberOfPlayers);
         for (int i=0; i<numberOfPlayers; i++) {
-            String nick = receive();
-            playerNicks.add(nick);
-            System.out.println("SendingThread: (nr) " + (i+1) + " (player) " + nick);
+            final String nick = receive();
+            final int isReady = receiveInt();
+            nickFields.add(new NickField(nick, isReady == Message.TRUE.ordinal()));
+            System.out.println("ReceivingThread: (nr) " + (i+1) + " (player) " + nick + " (isReady) " + isReady);
         }
-        return playerNicks;
+        return nickFields;
     }
 
     public void turnOnSend() throws IOException {
@@ -89,8 +95,20 @@ public class TcpClient {
         sendInt(Message.READY.ordinal());
     }
 
+    public void unreadySend() throws IOException {
+        sendInt(Message.UNREADY.ordinal());
+    }
+
     public void roomEventReceive() throws IOException {
-        controller.refreshRoom(getPlayerNicks());
+        controller.refreshRoom(getNickFields());
+    }
+
+    public void joinReceive() throws IOException {
+        controller.handleJoinRoom();
+    }
+
+    public void unjoinReceive() throws IOException {
+        controller.handleUnjoinRoom();
     }
 
     public void send(String msg) throws IOException {
@@ -102,7 +120,8 @@ public class TcpClient {
 
     public String receive() throws IOException {
         byte[] buf = new byte[BUF_SIZE];
-        dataInputStream.read(buf);
+        int length = receiveInt();
+        dataInputStream.readFully(buf, 0, length);
         return new String(buf);
     }
 

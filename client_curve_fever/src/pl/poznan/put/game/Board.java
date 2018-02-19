@@ -4,12 +4,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import pl.poznan.put.client.TcpClient;
 
 import java.io.IOException;
 
 public class Board {
+    private TcpClient tcpClient;
+    private Stage stage;
 
-    public Board() throws IOException {
+    public Board(TcpClient tcpClient) throws IOException {
         Label secondLabel = new Label("I'm a Label on new Window");
 
         StackPane secondaryLayout = new StackPane();
@@ -18,11 +22,19 @@ public class Board {
         Scene secondScene = new Scene(secondaryLayout, 230, 100);
 
         // New window (Stage)
-        Stage newWindow = new Stage();
-        newWindow.setTitle("Second Stage");
-        newWindow.setScene(secondScene);
+        stage = new Stage();
+        stage.setTitle("Second Stage");
+        stage.setScene(secondScene);
 
-        newWindow.show();
+        stage.show();
+
+        stage.setOnCloseRequest((WindowEvent event) -> {
+            try {
+                tcpClient.unreadySend();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
         /*Parent root = FXMLLoader.load(getClass().getResource("board.fxml"));
         Scene scene = new Scene(root, 600, 400);
@@ -30,5 +42,13 @@ public class Board {
         stage.setTitle("New Window");
         stage.setScene(scene);
         stage.show();*/
+    }
+
+    public void close() {
+        stage.close();
+    }
+
+    public boolean isVisible() {
+        return stage.isShowing();
     }
 }
