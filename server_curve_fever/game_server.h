@@ -20,6 +20,7 @@
 #include "tcp_server.h"
 #include "player.h"
 #include "safe_queue.h"
+#define MAX_ROOM_SEATS 4
 
 using namespace std;
 
@@ -34,6 +35,10 @@ public:
     void clientReceive(int clientSocket, sockaddr_in sockAddrClient);
     void clientSend(Player *player, SafeQueue <Message> *queue);
     void run();
+
+    bool isEveryoneReady();
+    bool isFreeSeat();
+    int countRoomPlayers();
 };
 
 #endif //SERVER_CURVE_FEVER_GAME_SERVER_H

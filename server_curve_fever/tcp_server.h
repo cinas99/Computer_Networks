@@ -50,12 +50,12 @@ public:
     sockaddr_in getClientSockAddr();
     void clientAccept();
 
-    void turnOnSend(int clientSocket, std::vector<Player*> connectedPlayers);
+    void turnOnSend(int clientSocket);
     std::string joinReceive(int clientSocket);
-    bool joinSend(int clientSocket, std::vector<Player*> connectedPlayers);
-    int countRoomPlayers(std::vector<Player*> connectedPlayers);
-    void ready();
-    void roomEventSend(int clientSocket, std::vector<Player *> connectedPlayers);
+    void joinSend(int clientSocket);
+    void unjoinSend(int clientSocket);
+    void roomEventSend(int clientSocket, int playersInRoom, std::vector<Player *> connectedPlayers);
+    void startSend(int clientSocket);
 
     std::string receive(int clientSocket);
     int receiveInt(int clientSocket);

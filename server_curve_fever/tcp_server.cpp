@@ -56,23 +56,12 @@ void TcpServer::clientAccept() {
            inet_ntoa((struct in_addr)sockClient.sin_addr));
 }
 
-int TcpServer::countRoomPlayers(std::vector<Player*> connectedPlayers) {
-    int result = 0;
-    for (std::vector<Player*>::iterator it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
-        if((*it)->isInRoom()) {
-            result++;
-        }
-    }
-    return result;
-}
-
-void TcpServer::turnOnSend(int clientSocket, std::vector<Player*> connectedPlayers) {
+void TcpServer::turnOnSend(int clientSocket) {
     sendInt(clientSocket, TURN_ON);
 }
 
-void TcpServer::roomEventSend(int clientSocket, std::vector<Player*> connectedPlayers) {
+void TcpServer::roomEventSend(int clientSocket, int playersInRoom, std::vector<Player*> connectedPlayers) {
     sendInt(clientSocket, ROOM_EVENT);
-    int playersInRoom = countRoomPlayers(connectedPlayers);
     sendInt(clientSocket, playersInRoom);
     for (std::vector<Player*>::iterator it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
         if ((*it)->isInRoom()) {
@@ -89,16 +78,16 @@ std::string TcpServer::joinReceive(int clientSocket) {
     return receive(clientSocket);
 }
 
-bool TcpServer::joinSend(int clientSocket, std::vector<Player*> connectedPlayers) {
-    int playersInRoom = countRoomPlayers(connectedPlayers);
-    if (playersInRoom < 4) {
-        sendInt(clientSocket, JOIN);
-        return true;
-    }
-    else {
-        sendInt(clientSocket, UNJOIN);
-        return false;
-    }
+void TcpServer::joinSend(int clientSocket) {
+    sendInt(clientSocket, JOIN);
+}
+
+void TcpServer::unjoinSend(int clientSocket) {
+    sendInt(clientSocket, UNJOIN);
+}
+
+void TcpServer::startSend(int clientSocket) {
+    sendInt(clientSocket, START);
 }
 
 std::string TcpServer::receive(int clientSocket) {
