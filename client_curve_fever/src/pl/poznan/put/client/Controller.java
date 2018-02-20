@@ -61,9 +61,6 @@ public class Controller {
     @FXML protected void handleJoinButton(ActionEvent event) {
         try {
             if (inside) {
-                //join.setText("Dołącz do pokoju");
-                //start.setDisable(true);
-                //nick.setDisable(false);
                 tcpClient.leaveSend();
                 join.setText("Dołącz do pokoju");
                 start.setDisable(true);
@@ -74,12 +71,8 @@ public class Controller {
                 inside = false;
             }
             else {
-                //join.setText("Opuść pokój");
-                //start.setDisable(false);
-                //nick.setDisable(true);
                 tcpClient.joinSend(nick.getText());
             }
-            //inside = !inside;
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -117,6 +110,17 @@ public class Controller {
                 start.setDisable(false);
                 nick.setDisable(true);
                 inside = true;
+            }
+        });
+    }
+
+    protected void startGame() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if (board != null) {
+                    board.start();
+                }
             }
         });
     }

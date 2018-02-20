@@ -12,12 +12,13 @@ import java.io.IOException;
 public class Board {
     private TcpClient tcpClient;
     private Stage stage;
+    private Label label;
 
     public Board(TcpClient tcpClient) throws IOException {
-        Label secondLabel = new Label("I'm a Label on new Window");
+        label = new Label("Waiting for server...");
 
         StackPane secondaryLayout = new StackPane();
-        secondaryLayout.getChildren().add(secondLabel);
+        secondaryLayout.getChildren().add(label);
 
         Scene secondScene = new Scene(secondaryLayout, 230, 100);
 
@@ -44,11 +45,15 @@ public class Board {
         stage.show();*/
     }
 
-    public void close() {
-        stage.close();
+    public void start() {
+        label.setText("Server confirmed! Let's start a game!");
     }
 
     public boolean isVisible() {
         return stage.isShowing();
+    }
+
+    public void close() {
+        stage.close();
     }
 }

@@ -13,6 +13,7 @@ public class TcpClient {
     private Socket sock;
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
+    private ReceivingThread receivingThread;
 
     class ReceivingThread extends Thread {
 
@@ -38,6 +39,10 @@ public class TcpClient {
                         case ROOM_EVENT:
                             System.out.println("ReceivingThread: Room event received!\n");
                             TcpClient.this.roomEventReceive();
+                            break;
+                        case START:
+                            System.out.println("ReceivingThread: Server is ready! Let's start a game...");
+                            TcpClient.this.startReceive();
                             break;
                     }
                 }
@@ -76,7 +81,7 @@ public class TcpClient {
 
     public void turnOnSend() throws IOException {
         System.out.println("SendingThread: Turn on");
-        Thread receivingThread = new ReceivingThread();
+        receivingThread = new ReceivingThread();
         receivingThread.setDaemon(true);
         receivingThread.start();
         sendInt(Message.TURN_ON.ordinal());
@@ -110,6 +115,10 @@ public class TcpClient {
     public void unjoinReceive() throws IOException {
         controller.handleUnjoinRoom();
     }
+    public void startReceive() {
+        controller.startGame();
+    }
+
 
     public void send(String msg) throws IOException {
         dataOutputStream.flush();
