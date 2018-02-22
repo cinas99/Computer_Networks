@@ -17,9 +17,11 @@
 #include <thread>
 #include <vector>
 #include <mutex>
-#include "tcp_server.h"
-#include "player.h"
-#include "safe_queue.h"
+#include "TcpServer.h"
+#include "Player.h"
+#include "SafeQueue.h"
+#include "UdpServer.h"
+
 #define MAX_ROOM_SEATS 4
 
 using namespace std;
@@ -27,13 +29,16 @@ using namespace std;
 class GameServer {
 private:
     TcpServer tcpServer;
+    UdpServer udpServer;
     vector <Player*> connectedPlayers; //parallel access
+    bool isGameStarted;
     mutex m;
 
 public:
     GameServer();
-    void clientReceive(int clientSocket, sockaddr_in sockAddrClient);
-    void clientSend(Player *player, SafeQueue <Message> *queue);
+    void tcpReceive(int tcpSocket, sockaddr_in clientSockAddr);
+    void tcpSend(Player *player, SafeQueue<Message> *queue);
+    void udpReceive(Player *player);
     void run();
 
     bool isEveryoneReady();

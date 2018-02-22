@@ -1,8 +1,8 @@
-#include "player.h"
+#include "Player.h"
 
-Player::Player(int clientSocket, sockaddr_in sockAddrClient) {
-    this->sockAddrClient = sockAddrClient;
-    this->clientSocket = clientSocket;
+Player::Player(int tcpSocket, sockaddr_in clientSockAddr) {
+    this->tcpSocket = tcpSocket;
+    this->clientSockAddr = clientSockAddr;
     this->inRoom = false;
     this->ready = false;
 }
@@ -15,8 +15,12 @@ std::string Player::getNick() {
     return nick;
 }
 
-int Player::getClientSocket() {
-    return clientSocket;
+int Player::getTcpSocket() {
+    return tcpSocket;
+}
+
+sockaddr_in Player::getSockAddr() {
+    return clientSockAddr;
 }
 
 void Player::setInRoom(bool inRoom) {

@@ -1,4 +1,4 @@
-#include "game_server.h"
+#include "GameServer.h"
 
 int main(int argc, char* argv[])
 {

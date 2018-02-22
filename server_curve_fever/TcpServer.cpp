@@ -1,4 +1,4 @@
-#include "tcp_server.h"
+#include "TcpServer.h"
 
 TcpServer::TcpServer() {
 }
@@ -10,7 +10,7 @@ void TcpServer::init() {
     memset(&sockServer, 0, sizeof(struct sockaddr));
     sockServer.sin_family = AF_INET;
     sockServer.sin_addr.s_addr = htonl(INADDR_ANY);
-    sockServer.sin_port = htons(SERVER_PORT);
+    sockServer.sin_port = htons(TCP_PORT);
 
     /* create a socket */
     nSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -36,68 +36,61 @@ void TcpServer::init() {
     }
 }
 
-int TcpServer::getClientSocket() {
-    return nClientSocket;
-}
-
-sockaddr_in TcpServer::getClientSockAddr() {
-    return sockClient;
-}
-
-void TcpServer::clientAccept() {
+int TcpServer::clientAccept(sockaddr_in *clientSockAddr) {
     socklen_t sockLen = sizeof(struct sockaddr);
-    nClientSocket = accept(nSocket, (struct sockaddr*)&sockClient, &sockLen);
+    int nClientSocket = accept(nSocket, (struct sockaddr*)clientSockAddr, &sockLen);
     if (nClientSocket < 0)
     {
         perror ("Nie można utworzyć gniazdka przy połączeniu z klientem");
         exit(1);
     }
-    printf("Połączenie z %s\n",
-           inet_ntoa((struct in_addr)sockClient.sin_addr));
+    printf("TCP connection to %s\n",
+           inet_ntoa((struct in_addr)clientSockAddr->sin_addr));
+    return nClientSocket;
 }
 
-void TcpServer::turnOnSend(int clientSocket) {
-    sendInt(clientSocket, TURN_ON);
+void TcpServer::turnOnSend(int tcpSocket) {
+    sendInt(tcpSocket, TURN_ON);
 }
 
-void TcpServer::roomEventSend(int clientSocket, int playersInRoom, std::vector<Player*> connectedPlayers) {
-    sendInt(clientSocket, ROOM_EVENT);
-    sendInt(clientSocket, playersInRoom);
+void TcpServer::roomEventSend(int tcpSocket, int playersInRoom, std::vector<Player*> connectedPlayers) {
+    sendInt(tcpSocket, ROOM_EVENT);
+    sendInt(tcpSocket, playersInRoom);
     for (std::vector<Player*>::iterator it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
         if ((*it)->isInRoom()) {
-            sendString(clientSocket, (*it)->getNick());
+            sendString(tcpSocket, (*it)->getNick());
             if ((*it)->isReady())
-                sendInt(clientSocket, TRUE);
+                sendInt(tcpSocket, TRUE);
             else
-                sendInt(clientSocket, FALSE);
+                sendInt(tcpSocket, FALSE);
         }
     }
 }
 
-std::string TcpServer::joinReceive(int clientSocket) {
-    return receive(clientSocket);
+std::string TcpServer::joinReceive(int tcpSocket) {
+    return receive(tcpSocket);
 }
 
-void TcpServer::joinSend(int clientSocket) {
-    sendInt(clientSocket, JOIN);
+void TcpServer::joinSend(int tcpSocket) {
+    sendInt(tcpSocket, JOIN);
 }
 
-void TcpServer::unjoinSend(int clientSocket) {
-    sendInt(clientSocket, UNJOIN);
+void TcpServer::unjoinSend(int tcpSocket) {
+    sendInt(tcpSocket, UNJOIN);
 }
 
-void TcpServer::startSend(int clientSocket) {
-    sendInt(clientSocket, START);
+void TcpServer::startSend(int tcpSocket) {
+    sendInt(tcpSocket, START);
 }
 
-std::string TcpServer::receive(int clientSocket) {
-    int size = receiveInt(clientSocket);
+std::string TcpServer::receive(int tcpSocket) {
+    int size = receiveInt(tcpSocket);
     char buf[BUF_SIZE];
     int left = size;
     int total = 0;
     int received;
     do {
-        received = read(clientSocket, &buf[total], left);
+        received = read(tcpSocket, &buf[total], left);
         if (received > 0) {
             total += received;
             left -= received;
@@ -107,13 +100,13 @@ std::string TcpServer::receive(int clientSocket) {
     return s;
 }
 
-int TcpServer::receiveInt(int clientSocket) {
+int TcpServer::receiveInt(int tcpSocket) {
     int32_t result;
     char *buf = (char*)&result;
     int left = sizeof(result);
     int received;
     do {
-        received = read(clientSocket, buf, left);
+        received = read(tcpSocket, buf, left);
         if (received > 0) {
             buf += received;
             left -= received;
@@ -122,27 +115,27 @@ int TcpServer::receiveInt(int clientSocket) {
     return ntohl(result);
 }
 
-void TcpServer::send(int clientSocket, const char* msg) {
-    std::cout << "send: (clientSocket) " << clientSocket << " (msg) " <<  msg << std::endl;
+void TcpServer::send(int tcpSocket, const char* msg) {
+    //std::cout << "send: (clientSocket) " << clientSocket << " (msg) " <<  msg << std::endl;
     char buf[BUF_SIZE];
     int msgLen = sprintf(buf, "%s", msg);
-    sendInt(clientSocket, msgLen);
-    write(clientSocket, buf, msgLen);
+    sendInt(tcpSocket, msgLen);
+    write(tcpSocket, buf, msgLen);
 }
 
-void TcpServer::sendString(int clientSocket, std::string msg) {
-    std::cout << "sendString: (clientSocket) " << clientSocket << " (msg) " <<  msg << std::endl;
+void TcpServer::sendString(int tcpSocket, std::string msg) {
+    //std::cout << "sendString: (clientSocket) " << clientSocket << " (msg) " <<  msg << std::endl;
     char buf[BUF_SIZE];
     int msgLen = sprintf(buf, "%s", msg.c_str());
-    sendInt(clientSocket, msgLen);
-    write(clientSocket, buf, msgLen);
+    sendInt(tcpSocket, msgLen);
+    write(tcpSocket, buf, msgLen);
 }
 
-void TcpServer::sendInt(int clientSocket, int num) {
-    std::cout << "sendInt: (clientSocket) " << clientSocket << " (num) " <<  num << std::endl;
+void TcpServer::sendInt(int tcpSocket, int num) {
+    //std::cout << "sendInt: (clientSocket) " << clientSocket << " (num) " <<  num << std::endl;
     int32_t convertedNum = htonl(num);
     char *buf = (char*)&convertedNum;
-    write(clientSocket, buf, sizeof(convertedNum));
+    write(tcpSocket, buf, sizeof(convertedNum));
 }
 
 void TcpServer::closeSocket() {

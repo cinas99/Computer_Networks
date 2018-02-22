@@ -17,17 +17,18 @@
 
 class Player {
 private:
-    sockaddr_in sockAddrClient;
-    int clientSocket;
+    int tcpSocket;
+    sockaddr_in clientSockAddr;
     std::string nick;
     bool inRoom;
     bool ready;
 
 public:
-    Player(int clientSocket, sockaddr_in sockAddrClient);
+    Player(int tcpSocket, sockaddr_in clientSockAddr);
     void setNick(std::string nick);
     std::string getNick();
-    int getClientSocket();
+    int getTcpSocket();
+    sockaddr_in getSockAddr();
     void setInRoom(bool inRoom);
     bool isInRoom();
     void setReady(bool ready);
