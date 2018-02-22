@@ -16,13 +16,13 @@ public class Controller {
     @FXML private Button join;
     @FXML private Button start;
     @FXML private TextField nick;
-    @FXML private TextField room1;
-    @FXML private TextField room2;
-    @FXML private TextField room3;
-    @FXML private TextField room4;
+    @FXML private TextField roomPlace1;
+    @FXML private TextField roomPlace2;
+    @FXML private TextField roomPlace3;
+    @FXML private TextField roomPlace4;
     private TcpClient tcpClient;
+    private UdpClient udpClient;
     private Board board;
-    //private UdpClient client;
     private boolean inside;
 
     public void initialize(){
@@ -82,8 +82,9 @@ public class Controller {
     @FXML protected void handleStartButton(ActionEvent event) {
         try {
             tcpClient.readySend();
+            udpClient = new UdpClient();
             if (board == null || !board.isVisible()) {
-                board = new Board(tcpClient);
+                board = new Board(tcpClient, udpClient);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -127,10 +128,10 @@ public class Controller {
 
     protected void refreshRoom(List<NickField> nickFields) {
         int size = nickFields.size();
-        refreshTextField(room1, nickFields,0, size);
-        refreshTextField(room2, nickFields,1, size);
-        refreshTextField(room3, nickFields,2, size);
-        refreshTextField(room4, nickFields,3, size);
+        refreshTextField(roomPlace1, nickFields,0, size);
+        refreshTextField(roomPlace2, nickFields,1, size);
+        refreshTextField(roomPlace3, nickFields,2, size);
+        refreshTextField(roomPlace4, nickFields,3, size);
     }
 
     private void refreshTextField(TextField textField, List<NickField> nickFields, int num, int size) {

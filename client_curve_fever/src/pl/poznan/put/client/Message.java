@@ -2,13 +2,14 @@ package pl.poznan.put.client;
 
 public enum Message {
     UNJOIN,
-    TURN_ON,
     JOIN,
+    TURN_ON,
     LEAVE,
-    READY,
     UNREADY,
+    READY,
     START,
     ROOM_EVENT,
+    UDP_CONNECT,
     TRUE,
     FALSE
 }

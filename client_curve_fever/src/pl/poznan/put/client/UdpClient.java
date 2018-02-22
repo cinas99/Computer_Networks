@@ -2,11 +2,10 @@ package pl.poznan.put.client;
 
 import java.io.*;
 import java.net.*;
-import java.nio.ByteBuffer;
 import java.util.Properties;
 
 public class UdpClient {
-    /*private static final int BUF_SIZE = 1024;
+    private static final int BUF_SIZE = 1024;
     private DatagramSocket sock;
     private InetSocketAddress addr;
     private int port;
@@ -17,9 +16,21 @@ public class UdpClient {
         props.load(reader);
 
         sock = new DatagramSocket();
-        port = Integer.parseInt(props.getProperty("port"));
+        port = Integer.parseInt(props.getProperty("udp_port"));
         addr = new InetSocketAddress(props.getProperty("ip"), port);
     }
+
+    public void send(String msg) throws IOException {
+        byte[] buf = msg.getBytes();
+        DatagramPacket out = new DatagramPacket(buf, buf.length, addr);
+        sock.send(out);
+    }
+
+    public void close() {
+        sock.close();
+    }
+
+    /*
 
     public void turnOn() throws IOException {
         int numberOfPlayers = 0;
@@ -126,10 +137,5 @@ public class UdpClient {
         byte[] buf = msg.getBytes();
         DatagramPacket out = new DatagramPacket(buf, buf.length, addr);
         sock.send(out);
-    }
-
-
-    public void close() {
-        sock.close();
-    }*/
+    } */
 }

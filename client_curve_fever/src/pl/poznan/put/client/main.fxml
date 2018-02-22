@@ -11,10 +11,10 @@
    <children>
       <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="313.0" prefWidth="450.0" VBox.vgrow="ALWAYS">
          <children>
-            <TextField fx:id="room1" editable="false" layoutX="49.0" layoutY="70.0" prefHeight="25.0" prefWidth="175.0" />
-            <TextField fx:id="room2" editable="false" layoutX="49.0" layoutY="115.0" prefHeight="25.0" prefWidth="175.0" />
-            <TextField fx:id="room3" editable="false" layoutX="49.0" layoutY="160.0" prefHeight="25.0" prefWidth="175.0" />
-            <TextField fx:id="room4" editable="false" layoutX="49.0" layoutY="205.0" prefHeight="25.0" prefWidth="175.0" />
+            <TextField fx:id="roomPlace1" editable="false" layoutX="49.0" layoutY="70.0" prefHeight="25.0" prefWidth="175.0" />
+            <TextField fx:id="roomPlace2" editable="false" layoutX="49.0" layoutY="115.0" prefHeight="25.0" prefWidth="175.0" />
+            <TextField fx:id="roomPlace3" editable="false" layoutX="49.0" layoutY="160.0" prefHeight="25.0" prefWidth="175.0" />
+            <TextField fx:id="roomPlace4" editable="false" layoutX="49.0" layoutY="205.0" prefHeight="25.0" prefWidth="175.0" />
             <Button fx:id="join" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="312.0" layoutY="197.0" minWidth="110.0" mnemonicParsing="false" onAction="#handleJoinButton" text="Dołącz do pokoju" textAlignment="CENTER" />
             <Button fx:id="start" disable="true" layoutX="474.0" layoutY="197.0" mnemonicParsing="false" onAction="#handleStartButton" prefHeight="25.0" prefWidth="110.0" text="Start!" />
             <Separator layoutX="268.0" layoutY="33.0" orientation="VERTICAL" prefHeight="205.0" prefWidth="6.0" />

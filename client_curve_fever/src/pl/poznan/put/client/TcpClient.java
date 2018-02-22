@@ -59,7 +59,7 @@ public class TcpClient {
         props.load(reader);
 
         sock = new Socket();
-        int port = Integer.parseInt(props.getProperty("port"));
+        int port = Integer.parseInt(props.getProperty("tcp_port"));
         String ip = props.getProperty("ip");
         sock.connect(new InetSocketAddress(ip, port));
         dataInputStream = new DataInputStream(sock.getInputStream());
@@ -115,7 +115,8 @@ public class TcpClient {
     public void unjoinReceive() throws IOException {
         controller.handleUnjoinRoom();
     }
-    public void startReceive() {
+    public void startReceive() throws IOException {
+        sendInt(Message.UDP_CONNECT.ordinal());
         controller.startGame();
     }
 
