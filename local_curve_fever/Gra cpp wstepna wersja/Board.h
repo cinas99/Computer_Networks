@@ -1,18 +1,12 @@
-//
-// Created by marcin on 13.02.18.
-//
-#ifndef SERVERUDPSKIBA_BOARD_H
-#define SERVERUDPSKIBA_BOARD_H
-
-#include <iostream>
-#include <vector>
-#include "Point.h"
-#include "Player.h"
-#include <Time.h>
-#include <fci.h>
+#ifndef SERVER_CURVE_FEVER_BOARD_H
+#define SERVER_CURVE_FEVER_BOARD_H
 
 class Board {
 private:
+    Board() {}
+    Board(Board const&);
+    Board(int maxNumberOfPlayers);
+    void operator=(Board const&);
     static Player player[4];
     static string colors[4];
     long double KEYFRAME_DURATION_TIME = 0.026; // seconds
@@ -27,12 +21,11 @@ private:
     static const int HEIGHT = 700;
     bool STILL_TIMING = FALSE;
     bool STILL_PLAYING = FALSE;
-    //const Timer timer;
-    //const Timeline timeline;
-
 public:
-    Board();
-    Board(int maxNumberOfPlayers);
+    static Board& getInstance() {
+        static Board instance;
+        return instance;
+    }
     static int getNumberOfPlayers();
     static bool outOfBounds(Point p);
     static bool areIntersecting(Point p1, Point p2, Point q1, Point q2);
@@ -48,6 +41,6 @@ public:
     void setStillTiming(bool cond);
     void setStillPlaying(bool cond);
     //void showResults(); // TODO LATER
-
 };
-#endif //SERVERUDP SKIBA_BOARD_H
+
+#endif //SERVER_CURVE_FEVER_BOARD_H

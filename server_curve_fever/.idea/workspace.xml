@@ -20,18 +20,9 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Message.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Message.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="84">
-              <caret line="4" column="21" lean-forward="false" selection-start-line="4" selection-start-column="21" selection-end-line="4" selection-end-column="21" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="TcpServer.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TcpServer.cpp">
           <provider selected="true" editor-type-id="text-editor">
@@ -109,18 +100,28 @@
       <file leaf-file-name="GameServer.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GameServer.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="302">
+            <state relative-caret-position="2730">
               <caret line="130" column="57" lean-forward="false" selection-start-line="130" selection-start-column="57" selection-end-line="130" selection-end-column="57" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Board.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Board.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Board.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="63">
+              <caret line="10" column="20" lean-forward="false" selection-start-line="10" selection-start-column="20" selection-end-line="10" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GameServer.h" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/GameServer.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="105">
+              <caret line="5" column="9" lean-forward="false" selection-start-line="5" selection-start-column="9" selection-end-line="5" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -169,7 +170,7 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="32" />
     <option name="y" value="36" />
     <option name="width" value="1299" />
@@ -208,6 +209,7 @@
   <component name="PropertiesComponent">
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -255,19 +257,21 @@
       <workItem from="1519202884429" duration="11165000" />
       <workItem from="1519225004302" duration="2549000" />
       <workItem from="1519259472326" duration="648000" />
-      <workItem from="1519577404767" duration="3000" />
+      <workItem from="1519577404767" duration="179000" />
+      <workItem from="1519584636241" duration="14000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="73214000" />
+    <option name="totallyTimeSpent" value="73404000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-9" y="-9" width="1938" height="1048" extended-state="7" />
+    <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16666667" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32928178" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -287,7 +291,6 @@
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934132" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -601,16 +604,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GameServer.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="840">
-          <caret line="40" column="36" lean-forward="false" selection-start-line="40" selection-start-column="36" selection-end-line="40" selection-end-column="36" />
-          <folding>
-            <element signature="e#83#102#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Message.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="84">
@@ -681,7 +674,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/GameServer.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
+        <state relative-caret-position="2730">
           <caret line="130" column="57" lean-forward="false" selection-start-line="130" selection-start-column="57" selection-end-line="130" selection-end-column="57" />
           <folding />
         </state>
@@ -689,9 +682,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Board.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="63">
+          <caret line="10" column="20" lean-forward="false" selection-start-line="10" selection-start-column="20" selection-end-line="10" selection-end-column="20" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GameServer.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="5" column="9" lean-forward="false" selection-start-line="5" selection-start-column="9" selection-end-line="5" selection-end-column="9" />
+          <folding>
+            <element signature="e#83#102#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

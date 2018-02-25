@@ -66,31 +66,31 @@ void Board::start() {
                 player[i].generateNextLine();
             }
             checkCollision();
-                if (currentNumberOfPlayers <= 1)
-                    setStillPlaying(FALSE); // LAST PLAYER LEFT - GAME OVER
+            if (currentNumberOfPlayers <= 1)
+                setStillPlaying(FALSE); // LAST PLAYER LEFT - GAME OVER
 
-                if (!checkStillPlaying()) {
-                    cout << "Game over";  // JAK TO ZROBIC ZGODNIE Z SERVEREM ?
-                    break;
+            if (!checkStillPlaying()) {
+                cout << "Game over";  // JAK TO ZROBIC ZGODNIE Z SERVEREM ?
+                break;
             }
             Sleep(100); // CZAS KWANTOWANIA
             cout<<" Checking cycle \n";
-            }
+        }
     }
     //return;
 }
 
 void Board::TimerTask(int interval, bool executor) {
-        interval = 0;
-        Sleep(10);
-        while (executor) {
-            interval += 1;
-            if (interval > 500) {
-                executor = checkStillTiming();
-                interval = 0;
-            }
+    interval = 0;
+    Sleep(10);
+    while (executor) {
+        interval += 1;
+        if (interval > 500) {
+            executor = checkStillTiming();
+            interval = 0;
         }
     }
+}
 
 bool Board::outOfBounds(Point p) {
     return (p.getX() > WIDTH || p.getX() < 0 || p.getY() > HEIGHT || p.getY() < 0);

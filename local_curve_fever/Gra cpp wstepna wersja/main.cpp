@@ -1,12 +1,8 @@
-#include <iostream>
-#include <docobjectservice.h>
-#include "Board.h"
+#include "GameServer.h"
 
-int main() {
-    Board(4); // Initialization of 4 players
-    Board board;
-    m.mutex()
-    board.setStillPlaying(1);
-    board.setStillTiming(1);
-    board.start();
+int main(int argc, char* argv[])
+{
+    GameServer gameServer;
+    gameServer.run();
+    return(0);
 }
