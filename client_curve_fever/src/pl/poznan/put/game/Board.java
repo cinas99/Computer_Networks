@@ -13,14 +13,12 @@ import java.io.IOException;
 public class Board {
     private TcpClient tcpClient;
     private UdpClient udpClient;
-    private Stage stage;
-    private Label label;
+    private Stage stage = new Stage();
+    private Label label = new Label("Waiting for server...");;
 
     public Board(TcpClient tcpClient, UdpClient udpClient) throws IOException {
         this.tcpClient = tcpClient;
         this.udpClient = udpClient;
-
-        label = new Label("Waiting for server...");
 
         StackPane layout = new StackPane();
         layout.getChildren().add(label);
@@ -46,11 +44,11 @@ public class Board {
 
     public void start() {
         label.setText("Server confirmed! Let's start a game!");
-        try {
+        /*try {
             udpClient.send("udp test message");
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public boolean isVisible() {

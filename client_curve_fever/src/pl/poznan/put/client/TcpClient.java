@@ -13,35 +13,35 @@ public class TcpClient {
     private Socket sock;
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
-    private ReceivingThread receivingThread;
+    private ReceivingTcpThread receivingTcpThread;
 
-    class ReceivingThread extends Thread {
+    class ReceivingTcpThread extends Thread {
 
         @Override
         public void run() {
             try {
                 while (true) {
                     int msg = receiveInt();
-                    System.out.println("ReceivingThread: (message) " + msg);
+                    System.out.println("Tcp receive: (message) " + msg);
                     Message message = Message.values()[msg];
                     switch (message) {
                         case TURN_ON:
-                            System.out.println("ReceivingThread: Connected to server!\n");
+                            System.out.println("Tcp receive: Connected to server!\n");
                             break;
                         case JOIN:
-                            System.out.println("ReceivingThread: Joined to room!\n");
+                            System.out.println("Tcp receive: Joined to room!\n");
                             TcpClient.this.joinReceive();
                             break;
                         case UNJOIN:
-                            System.out.println("ReceivingThread: Room is full!\n");
+                            System.out.println("Tcp receive: Room is full!\n");
                             TcpClient.this.unjoinReceive();
                             break;
                         case ROOM_EVENT:
-                            System.out.println("ReceivingThread: Room event received!\n");
+                            System.out.println("Tcp receive: Room event received!\n");
                             TcpClient.this.roomEventReceive();
                             break;
                         case START:
-                            System.out.println("ReceivingThread: Server is ready! Let's start a game...");
+                            System.out.println("Tcp receive: Server is ready! Let's start a game...");
                             TcpClient.this.startReceive();
                             break;
                     }
@@ -69,21 +69,21 @@ public class TcpClient {
     private List <NickField> getNickFields() throws IOException {
         int numberOfPlayers = receiveInt();
         List <NickField> nickFields = new ArrayList<NickField>();
-        System.out.println("ReceivingThread: (number of players) " + numberOfPlayers);
+        System.out.println("Tcp receive: (number of players) " + numberOfPlayers);
         for (int i=0; i<numberOfPlayers; i++) {
             final String nick = receive();
             final int isReady = receiveInt();
             nickFields.add(new NickField(nick, isReady == Message.TRUE.ordinal()));
-            System.out.println("ReceivingThread: (nr) " + (i+1) + " (player) " + nick + " (isReady) " + isReady);
+            System.out.println("Tcp receive: (nr) " + (i+1) + " (player) " + nick + " (isReady) " + isReady);
         }
         return nickFields;
     }
 
     public void turnOnSend() throws IOException {
-        System.out.println("SendingThread: Turn on");
-        receivingThread = new ReceivingThread();
-        receivingThread.setDaemon(true);
-        receivingThread.start();
+        System.out.println("Tcp send: Turn on");
+        receivingTcpThread = new ReceivingTcpThread();
+        receivingTcpThread.setDaemon(true);
+        receivingTcpThread.start();
         sendInt(Message.TURN_ON.ordinal());
     }
 

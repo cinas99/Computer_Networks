@@ -83,6 +83,7 @@ public class Controller {
         try {
             tcpClient.readySend();
             udpClient = new UdpClient();
+            udpClient.startReceiving();
             if (board == null || !board.isVisible()) {
                 board = new Board(tcpClient, udpClient);
             }
@@ -145,6 +146,18 @@ public class Controller {
         }
         else {
             textField.setText("");
+        }
+    }
+
+    @FXML protected void handleButton() {
+        nick.setDisable(false);
+        String msg = nick.getText();
+        try {
+            udpClient.send(msg);
+            //String returnMsg = udpClient.receive();
+            //System.out.println("(udpReturnMessage) " + returnMsg);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -9,6 +9,23 @@ public class UdpClient {
     private DatagramSocket sock;
     private InetSocketAddress addr;
     private int port;
+    private ReceivingUdpThread receivingUdpThread;
+
+    class ReceivingUdpThread extends Thread {
+
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    System.out.println("Udp receive: is running!");
+                    String msg = receive();
+                    System.out.println("Udp receive: (message) " + msg);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
     public UdpClient() throws IOException {
         Properties props = new Properties();
@@ -20,10 +37,25 @@ public class UdpClient {
         addr = new InetSocketAddress(props.getProperty("ip"), port);
     }
 
+    public void startReceiving() {
+        receivingUdpThread = new ReceivingUdpThread();
+        receivingUdpThread.setDaemon(true);
+        receivingUdpThread.start();
+    }
+
     public void send(String msg) throws IOException {
+        msg += '\0';
         byte[] buf = msg.getBytes();
         DatagramPacket out = new DatagramPacket(buf, buf.length, addr);
         sock.send(out);
+    }
+
+    public String receive() throws IOException {
+        byte[] buf = new byte[BUF_SIZE];
+        DatagramPacket in = new DatagramPacket(buf, BUF_SIZE);
+        sock.receive(in);
+        System.out.println("receive: ");
+        return new String(in.getData());
     }
 
     public void close() {
