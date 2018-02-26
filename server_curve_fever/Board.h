@@ -6,13 +6,17 @@
 #include "Point.h"
 #include "Player.h"
 #include "Message.h"
+#include "TcpServer.h"
+#include "UdpServer.h"
 #include <string.h>
 
 class Board {
 private:
     Board(Board const&);
-
     void operator=(Board const&);
+    TcpServer tcpServer;
+    UdpServer udpServer;
+
     static Player player[4];
     static string colors[4];
     long double KEYFRAME_DURATION_TIME = 0.026; // seconds
@@ -33,6 +37,8 @@ public:
         static Board instance;
         return instance;
     }
+    void setServers(TcpServer tcpServer, UdpServer udpServer);
+
     static int getNumberOfPlayers();
     static bool outOfBounds(Point p);
     static bool areIntersecting(Point p1, Point p2, Point q1, Point q2);

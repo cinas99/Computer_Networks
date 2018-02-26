@@ -11,6 +11,11 @@
 #define PI 3.14
 using namespace std;
 
+void Board::setServers(TcpServer tcpServer, UdpServer udpServer) {
+    this->tcpServer = tcpServer;
+    this->udpServer = udpServer;
+}
+
 Player Board::player[4];
 string Board::colors[4] = {"0x000000", "0x00005F", "0x00008F", "0x0000FF"};
 int tmp_num_players = Board::getNumberOfPlayers();

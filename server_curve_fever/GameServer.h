@@ -21,6 +21,7 @@
 #include "Player.h"
 #include "SafeQueue.h"
 #include "UdpServer.h"
+#include "Board.h"
 
 #define MAX_ROOM_SEATS 4
 
@@ -32,13 +33,15 @@ private:
     UdpServer udpServer;
     vector <Player*> connectedPlayers; //parallel access
     bool isGameStarted;
-    mutex m;
+    mutex mPlayers;
+    mutex mBoard;
 
 public:
     GameServer();
     void tcpReceive(int tcpSocket, sockaddr_in clientSockAddr);
     void tcpSend(Player *player, SafeQueue<Message> *queue);
     void udpReceive(Player *player);
+    void udpSend(Player *player, SafeQueue<string> *queue);
     void run();
 
     bool isEveryoneReady();

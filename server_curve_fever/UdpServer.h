@@ -28,6 +28,7 @@ public:
     UdpServer();
     int init();
     std::string receive(sockaddr_in clientSockAddr);
+    void send(sockaddr_in clientSockAddr, std::string msg);
     void closeSocket();
 };
 

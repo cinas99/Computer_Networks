@@ -28,12 +28,6 @@ int UdpServer::init() {
         exit (EXIT_FAILURE);
     }
     return nSocket;
-
-    //int rcvLen = recvfrom(nSocket, buf, BUF_SIZE, 0, (struct sockaddr*)&sockClient, &sockClientLen);
-    //printf("Odebrano pakiet od %s:%d\n", inet_ntoa(sockClient.sin_addr), ntohs(sockClient.sin_port));
-    //printf("Długość wiadomości: %d, Treść: %s\n" , rcvLen, buf);
-
-    //close(nSocket);
 }
 
 std::string UdpServer::receive(sockaddr_in clientSockAddr) {
@@ -42,10 +36,14 @@ std::string UdpServer::receive(sockaddr_in clientSockAddr) {
     recvfrom(nSocket, buf, BUF_SIZE, 0, (struct sockaddr*)&clientSockAddr, &clientSockAddrLen);
     std::string s(buf);
     return s;
+}
 
-    //printf("UDP connect to %s\n",
-           //inet_ntoa((struct in_addr)clientSockAddr.sin_addr));
-    //printf("Message: %s\n", buf);
+void UdpServer::send(sockaddr_in clientSockAddr, std::string msg) {
+    char buf[BUF_SIZE];
+    socklen_t clientSockAddrLen = sizeof(clientSockAddr);
+    msg += "\0";
+    int msgLen = sprintf(buf, "%s", msg.c_str());
+    sendto(nSocket, buf, msgLen, 0, (struct sockaddr *)&clientSockAddr, clientSockAddrLen);
 }
 
 void UdpServer::closeSocket() {
