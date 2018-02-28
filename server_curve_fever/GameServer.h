@@ -47,6 +47,7 @@ public:
     bool isEveryoneReady();
     bool isFreeSeat();
     int countRoomPlayers();
+    void deletePlayer(Player player);
 };
 
 #endif //SERVER_CURVE_FEVER_GAME_SERVER_H

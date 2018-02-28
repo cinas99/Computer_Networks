@@ -13,7 +13,8 @@ GameServer::GameServer() {
 void GameServer::tcpReceive(int tcpSocket, sockaddr_in clientSockAddr) {
     Player player(tcpSocket, clientSockAddr);
     SafeQueue <Message> queue;
-    while (true) {
+    bool isThreadAlive = true;
+    while (isThreadAlive) {
         int msg = tcpServer.receiveInt(tcpSocket);
         cout << "TCP Receive: (tcpSocket) " << tcpSocket << " (msg) " << msg << endl;
         switch (msg) {
@@ -45,6 +46,17 @@ void GameServer::tcpReceive(int tcpSocket, sockaddr_in clientSockAddr) {
                 mPlayers.unlock();
                 queue.push(ROOM_EVENT);
                 break;
+            case DISCONNECT:
+                mPlayers.lock();
+                deletePlayer(player);
+                //player.setInRoom(false);
+                //player.setReady(false);
+                cout << "TCP Receive: Disconnect, receiving thread is saying bye-bye! (tcpSocket) " << tcpSocket << endl
+                     << endl;
+                mPlayers.unlock();
+                isThreadAlive = false;
+                queue.push(DISCONNECT);
+                break;
             case READY:
                 mPlayers.lock();
                 player.setReady(true);
@@ -74,7 +86,8 @@ void GameServer::tcpReceive(int tcpSocket, sockaddr_in clientSockAddr) {
 
 void GameServer::tcpSend(Player *player, SafeQueue<Message> *queue) {
     const int tcpSocket = player->getTcpSocket();
-    while (true) {
+    bool isThreadAlive = true;
+    while (isThreadAlive) {
         Message message = queue->get();
         cout << "TCP Send: (tcpSocket) " << tcpSocket << " (message) " << message << endl;
         switch (message) {
@@ -110,6 +123,11 @@ void GameServer::tcpSend(Player *player, SafeQueue<Message> *queue) {
                 mPlayers.unlock();
                 break;
             }
+            case DISCONNECT:
+                cout << "TCP Send: Disconnect, sending thread is saying bye-bye! (tcpSocket) " << tcpSocket << endl <<
+                                                                                                                 endl;
+                isThreadAlive = false;
+                break;
             case START:
                 mPlayers.lock();
                 for (vector<Player *>::iterator it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
@@ -185,4 +203,17 @@ int GameServer::countRoomPlayers() {
         }
     }
     return result;
+}
+
+void GameServer::deletePlayer(Player player) {
+    std::vector<Player *>::iterator foundPlayer;
+    int tcpSocket = player.getTcpSocket();
+    for (std::vector<Player*>::iterator it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
+        if((*it)->getTcpSocket() == tcpSocket) {
+            foundPlayer = it;
+            break;
+        }
+    }
+    connectedPlayers.erase(foundPlayer);
+    cout << "DeletePlayer: current number of players " << connectedPlayers.size() << endl << endl;
 }
