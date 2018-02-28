@@ -149,15 +149,13 @@ public class Controller {
         }
     }
 
-    @FXML protected void handleButton() {
+    /*@FXML protected void handleButton() {
         nick.setDisable(false);
         String msg = nick.getText();
         try {
             udpClient.send(msg);
-            //String returnMsg = udpClient.receive();
-            //System.out.println("(udpReturnMessage) " + returnMsg);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }

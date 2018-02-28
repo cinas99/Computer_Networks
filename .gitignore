@@ -2,6 +2,7 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff:
+client_curve_fever/.idea/workspace.xml
 server_curve_fever/.idea/workspace.xml
 .idea/workspace.xml
 **/.idea/**/workspace.xml

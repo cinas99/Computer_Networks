@@ -15,9 +15,9 @@ public class UdpClient {
 
         @Override
         public void run() {
+            System.out.println("Udp receive: is running!");
             while (true) {
                 try {
-                    System.out.println("Udp receive: is running!");
                     String msg = receive();
                     System.out.println("Udp receive: (message) " + msg);
                 } catch (IOException e) {
@@ -54,7 +54,6 @@ public class UdpClient {
         byte[] buf = new byte[BUF_SIZE];
         DatagramPacket in = new DatagramPacket(buf, BUF_SIZE);
         sock.receive(in);
-        System.out.println("receive: ");
         return new String(in.getData());
     }
 
