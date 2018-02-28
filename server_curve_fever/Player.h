@@ -45,6 +45,9 @@ public:
 
     Player(double startX, double startY, double angle, std::string color);
 
+    sockaddr_in getSockAddr();
+    void setSockAddr(sockaddr_in clientSockAddr);
+
     void generateNextLine();
 
     void markGap();
@@ -74,8 +77,6 @@ public:
     std::string getNick();
 
     int getTcpSocket();
-
-    sockaddr_in getSockAddr();
 
     void setInRoom(bool inRoom);
 

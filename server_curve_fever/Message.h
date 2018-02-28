@@ -4,7 +4,7 @@
 #define QUEUE_SIZE 100
 #define BUF_SIZE 1024
 #define TCP_PORT 9022
-#define UDP_PORT 9023
+#define UDP_PORT 9022
 
 enum Message{
     UNJOIN,

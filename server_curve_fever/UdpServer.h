@@ -18,6 +18,7 @@
 #include <vector>
 #include <iostream>
 #include "Message.h"
+#include "Player.h"
 
 class UdpServer {
 private:
@@ -27,8 +28,8 @@ private:
 public:
     UdpServer();
     int init();
-    std::string receive(sockaddr_in clientSockAddr);
-    void send(sockaddr_in clientSockAddr, std::string msg);
+    std::string receive(Player *player);
+    void send(Player *player, std::string msg);
     void closeSocket();
 };
 

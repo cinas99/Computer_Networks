@@ -131,22 +131,20 @@ void GameServer::tcpSend(Player *player, SafeQueue<Message> *queue) {
 }
 
 void GameServer::udpReceive(Player *player) {
-    sockaddr_in clientSockAddr = player->getSockAddr();
     SafeQueue <string> queue;
     thread udpSender(&GameServer::udpSend, this, player, &queue);
     udpSender.detach();
     while (true) {
-        string msg = udpServer.receive(clientSockAddr);
+        string msg = udpServer.receive(player);
         cout << "UDP Receive: (msg) " << msg << endl;
         queue.push(msg);
     }
 }
 
 void GameServer::udpSend(Player *player, SafeQueue<string> *queue) {
-    sockaddr_in clientSockAddr = player->getSockAddr();
     while (true) {
         string msg = queue->get();
-        udpServer.send(clientSockAddr, msg);
+        udpServer.send(player, msg);
         cout << "UDP Send: (tcpSocket) " << player->getTcpSocket() << " (msg) " << msg << endl;
     }
 }

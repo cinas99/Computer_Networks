@@ -26,18 +26,18 @@
       <file leaf-file-name="TcpServer.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TcpServer.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1652">
+            <state relative-caret-position="428">
               <caret line="118" column="41" lean-forward="false" selection-start-line="118" selection-start-column="41" selection-end-line="118" selection-end-column="41" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UdpServer.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="UdpServer.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/UdpServer.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="344">
-              <caret line="44" column="33" lean-forward="false" selection-start-line="44" selection-start-column="33" selection-end-line="44" selection-end-column="33" />
+            <state relative-caret-position="428">
+              <caret line="44" column="55" lean-forward="false" selection-start-line="44" selection-start-column="55" selection-end-line="44" selection-end-column="55" />
               <folding />
             </state>
           </provider>
@@ -46,9 +46,11 @@
       <file leaf-file-name="UdpServer.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/UdpServer.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="196">
-              <caret line="30" column="42" lean-forward="false" selection-start-line="30" selection-start-column="42" selection-end-line="30" selection-end-column="42" />
-              <folding />
+            <state relative-caret-position="288">
+              <caret line="31" column="28" lean-forward="false" selection-start-line="31" selection-start-column="28" selection-end-line="31" selection-end-column="28" />
+              <folding>
+                <element signature="e#81#100#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -56,18 +58,28 @@
       <file leaf-file-name="TcpServer.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TcpServer.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="78">
+            <state relative-caret-position="168">
               <caret line="29" column="16" lean-forward="false" selection-start-line="29" selection-start-column="16" selection-end-line="29" selection-end-column="16" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GameServer.cpp" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/GameServer.cpp">
+      <file leaf-file-name="Player.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Player.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="154">
-              <caret line="140" column="24" lean-forward="false" selection-start-line="140" selection-start-column="24" selection-end-line="140" selection-end-column="24" />
+            <state relative-caret-position="252">
+              <caret line="48" column="47" lean-forward="false" selection-start-line="48" selection-start-column="47" selection-end-line="48" selection-end-column="47" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Point.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Point.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -76,28 +88,28 @@
       <file leaf-file-name="Player.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Player.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="116" column="17" lean-forward="false" selection-start-line="116" selection-start-column="17" selection-end-line="116" selection-end-column="17" />
+            <state relative-caret-position="200">
+              <caret line="121" column="42" lean-forward="false" selection-start-line="121" selection-start-column="42" selection-end-line="121" selection-end-column="42" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Message.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Message.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="84">
-              <caret line="6" column="8" lean-forward="false" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="56">
-              <caret line="4" column="0" lean-forward="false" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="29" />
+              <caret line="5" column="21" lean-forward="false" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GameServer.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GameServer.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="50">
+              <caret line="132" column="45" lean-forward="false" selection-start-line="132" selection-start-column="45" selection-end-line="132" selection-end-column="45" />
               <folding />
             </state>
           </provider>
@@ -108,18 +120,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="190">
               <caret line="36" column="17" lean-forward="false" selection-start-line="36" selection-start-column="17" selection-end-line="36" selection-end-column="17" />
-              <folding>
-                <element signature="e#83#102#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Board.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Board.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="112">
-              <caret line="15" column="32" lean-forward="false" selection-start-line="15" selection-start-column="32" selection-end-line="15" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -131,6 +131,7 @@
     <findStrings>
       <find>roomeventsend</find>
       <find>ready</find>
+      <find>setsockport</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -149,17 +150,17 @@
         <option value="$PROJECT_DIR$/message.h" />
         <option value="$PROJECT_DIR$/game_server.cpp" />
         <option value="$PROJECT_DIR$/udp_server.h" />
-        <option value="$PROJECT_DIR$/Message.h" />
         <option value="$PROJECT_DIR$/TcpServer.cpp" />
         <option value="$PROJECT_DIR$/TcpServer.h" />
-        <option value="$PROJECT_DIR$/Player.cpp" />
-        <option value="$PROJECT_DIR$/Player.h" />
         <option value="$PROJECT_DIR$/Board.h" />
         <option value="$PROJECT_DIR$/Board.cpp" />
         <option value="$PROJECT_DIR$/GameServer.h" />
+        <option value="$PROJECT_DIR$/Message.h" />
+        <option value="$PROJECT_DIR$/Player.h" />
+        <option value="$PROJECT_DIR$/Player.cpp" />
+        <option value="$PROJECT_DIR$/UdpServer.cpp" />
         <option value="$PROJECT_DIR$/UdpServer.h" />
         <option value="$PROJECT_DIR$/GameServer.cpp" />
-        <option value="$PROJECT_DIR$/UdpServer.cpp" />
       </list>
     </option>
   </component>
@@ -262,14 +263,15 @@
       <workItem from="1519585422493" duration="18000" />
       <workItem from="1519666103151" duration="756000" />
       <workItem from="1519667426870" duration="13164000" />
+      <workItem from="1519810013976" duration="5734000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="87469000" />
+    <option name="totallyTimeSpent" value="93203000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="32" y="36" width="1303" height="780" extended-state="6" />
+    <frame x="32" y="36" width="1301" height="772" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16602613" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
@@ -277,12 +279,12 @@
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32784432" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934132" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2724551" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2724551" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -315,19 +317,10 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Player.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SafeQueue.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="462">
           <caret line="33" column="1" lean-forward="false" selection-start-line="33" selection-start-column="1" selection-end-line="33" selection-end-column="1" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -343,9 +336,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="364">
           <caret line="26" column="7" lean-forward="false" selection-start-line="26" selection-start-column="7" selection-end-line="26" selection-end-column="7" />
-          <folding>
-            <element signature="e#73#90#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -407,7 +398,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="462">
           <caret line="33" column="1" lean-forward="false" selection-start-line="33" selection-start-column="1" selection-end-line="33" selection-end-column="1" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -423,9 +413,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="364">
           <caret line="26" column="7" lean-forward="false" selection-start-line="26" selection-start-column="7" selection-end-line="26" selection-end-column="7" />
-          <folding>
-            <element signature="e#73#90#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -433,9 +421,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="406">
           <caret line="29" column="12" lean-forward="false" selection-start-line="29" selection-start-column="12" selection-end-line="29" selection-end-column="12" />
-          <folding>
-            <element signature="e#83#102#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -579,31 +565,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="462">
           <caret line="33" column="1" lean-forward="false" selection-start-line="33" selection-start-column="1" selection-end-line="33" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Point.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="56">
-          <caret line="5" column="21" lean-forward="false" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Player.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="24" column="16" lean-forward="false" selection-start-line="24" selection-start-column="16" selection-end-line="24" selection-end-column="16" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -617,27 +578,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Board.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="112">
+        <state relative-caret-position="210">
           <caret line="15" column="32" lean-forward="false" selection-start-line="15" selection-start-column="32" selection-end-line="15" selection-end-column="32" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Player.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="116" column="17" lean-forward="false" selection-start-line="116" selection-start-column="17" selection-end-line="116" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GameServer.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="36" column="17" lean-forward="false" selection-start-line="36" selection-start-column="17" selection-end-line="36" selection-end-column="17" />
-          <folding>
-            <element signature="e#83#102#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -649,50 +592,100 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Point.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Message.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="84">
-          <caret line="6" column="8" lean-forward="false" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
+          <caret line="6" column="21" lean-forward="false" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/UdpServer.h">
+    <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="30" column="42" lean-forward="false" selection-start-line="30" selection-start-column="42" selection-end-line="30" selection-end-column="42" />
+        <state relative-caret-position="56">
+          <caret line="5" column="21" lean-forward="false" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TcpServer.h">
+    <entry file="file://$PROJECT_DIR$/Point.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="78">
-          <caret line="29" column="16" lean-forward="false" selection-start-line="29" selection-start-column="16" selection-end-line="29" selection-end-column="16" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/TcpServer.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1652">
+        <state relative-caret-position="428">
           <caret line="118" column="41" lean-forward="false" selection-start-line="118" selection-start-column="41" selection-end-line="118" selection-end-column="41" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/UdpServer.cpp">
+    <entry file="file://$PROJECT_DIR$/Player.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="344">
-          <caret line="44" column="33" lean-forward="false" selection-start-line="44" selection-start-column="33" selection-end-line="44" selection-end-column="33" />
+        <state relative-caret-position="252">
+          <caret line="48" column="47" lean-forward="false" selection-start-line="48" selection-start-column="47" selection-end-line="48" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Player.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="121" column="42" lean-forward="false" selection-start-line="121" selection-start-column="42" selection-end-line="121" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GameServer.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="36" column="17" lean-forward="false" selection-start-line="36" selection-start-column="17" selection-end-line="36" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TcpServer.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="29" column="16" lean-forward="false" selection-start-line="29" selection-start-column="16" selection-end-line="29" selection-end-column="16" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/GameServer.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="154">
-          <caret line="140" column="24" lean-forward="false" selection-start-line="140" selection-start-column="24" selection-end-line="140" selection-end-column="24" />
+        <state relative-caret-position="50">
+          <caret line="132" column="45" lean-forward="false" selection-start-line="132" selection-start-column="45" selection-end-line="132" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/UdpServer.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="31" column="28" lean-forward="false" selection-start-line="31" selection-start-column="28" selection-end-line="31" selection-end-column="28" />
+          <folding>
+            <element signature="e#81#100#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/UdpServer.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="428">
+          <caret line="44" column="55" lean-forward="false" selection-start-line="44" selection-start-column="55" selection-end-line="44" selection-end-column="55" />
           <folding />
         </state>
       </provider>

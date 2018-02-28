@@ -117,6 +117,11 @@ sockaddr_in Player::getSockAddr() {
     return clientSockAddr;
 }
 
+void Player::setSockAddr(sockaddr_in clientSockAddr) {
+    //this->clientSockAddr.sin_port = port;
+    this->clientSockAddr = clientSockAddr;
+}
+
 void Player::setInRoom(bool inRoom) {
     this->inRoom = inRoom;
 }
