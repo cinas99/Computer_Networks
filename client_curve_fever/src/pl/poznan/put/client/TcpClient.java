@@ -96,6 +96,10 @@ public class TcpClient {
         sendInt(Message.LEAVE.ordinal());
     }
 
+    public void disconnectSend() throws IOException {
+        sendInt(Message.DISCONNECT.ordinal());
+    }
+
     public void readySend() throws IOException {
         sendInt(Message.READY.ordinal());
     }

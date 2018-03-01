@@ -51,8 +51,9 @@ public class Controller {
 
     public void shutdown() {
         try {
-            tcpClient.leaveSend();
-            tcpClient.close();
+            tcpClient.disconnectSend();
+            //tcpClient.close();
+            //udpClient.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
