@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-Player::Player(){};
+//Player::Player(){};
 
 Player::Player(double startX, double startY, double angle) {
     this->currentX = startX;
@@ -14,14 +14,14 @@ Player::Player(double startX, double startY, double angle) {
     this->draw = false;
     //this->color = color;
     this->nowPlaying = true;
-    this->cur_point = setCurPoint(startX,startY);
-
+    //this->cur_point = setCurPoint(startX,startY);
+    Point point(currentX, currentY);
     if (draw) {
-        visited.emplace_back(cur_point);
+        visited.emplace_back(point);
     }
 }
 
-Player::Player(double startX, double startY, double angle, string color):color(std::move(color)) {
+/*Player::Player(double startX, double startY, double angle, string color):color(std::move(color)) {
     this->currentX = startX;
     this->currentY = startY;
     this->angle = angle;
@@ -33,7 +33,7 @@ Player::Player(double startX, double startY, double angle, string color):color(s
     if (draw) {
         visited.emplace_back(cur_point);
     }
-}
+}*/
 
 void Player::generateNextLine() {
     if (turn == -1) {

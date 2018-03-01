@@ -30,7 +30,7 @@ private:
     double CIRCULAR_SPEED = 0.12;
     vector<Point> visited;
     Point cur_point = setCurPoint(currentX, currentY);
-    string color; // zamiast wektora moze tablica ??
+    //string color; // zamiast wektora moze tablica ??
     double currentX;
     double currentY;
     double angle;
@@ -39,11 +39,11 @@ private:
     bool nowPlaying;
 
 public:
-    Player();
+    //Player();
 
     Player(double startX, double startY, double angle);
 
-    Player(double startX, double startY, double angle, std::string color);
+    //Player(double startX, double startY, double angle, std::string color);
 
     sockaddr_in getSockAddr();
     void setSockAddr(sockaddr_in clientSockAddr);

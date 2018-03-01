@@ -6,7 +6,6 @@ GameServer::GameServer() {
 
 /*
  * TODO:
- * Message when player disconnects, then delete it from server
  * Check if nick is unique
  */
 
@@ -53,9 +52,10 @@ void GameServer::tcpReceive(int tcpSocket, sockaddr_in clientSockAddr) {
                 //player.setReady(false);
                 cout << "TCP Receive: Disconnect, receiving thread is saying bye-bye! (tcpSocket) " << tcpSocket << endl
                      << endl;
+                queue.push(DISCONNECT);
+                queue.push(ROOM_EVENT);
                 mPlayers.unlock();
                 isThreadAlive = false;
-                queue.push(DISCONNECT);
                 break;
             case READY:
                 mPlayers.lock();
@@ -130,9 +130,11 @@ void GameServer::tcpSend(Player *player, SafeQueue<Message> *queue) {
                 break;
             case START:
                 mPlayers.lock();
+                int numberOfGamePlayers = 0;
                 for (vector<Player *>::iterator it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
                     if ((*it)->isReady() && (*it)->isInRoom()) {
                         tcpServer.startSend((*it)->getTcpSocket());
+                        numberOfGamePlayers++;
                     }
                 }
                 isGameStarted = true;
@@ -141,7 +143,7 @@ void GameServer::tcpSend(Player *player, SafeQueue<Message> *queue) {
                 mPlayers.unlock();
                 mBoard.lock();
                 Board &board = Board::getInstance();
-                board.setServers(tcpServer, udpServer);
+                board.start(numberOfGamePlayers, tcpServer, udpServer);
                 mBoard.unlock();
                 break;
         }

@@ -16,9 +16,10 @@ private:
     void operator=(Board const&);
     TcpServer tcpServer;
     UdpServer udpServer;
+    int numberOfPlayers;
+    //string colors[4];
 
-    static Player player[4];
-    static string colors[4];
+    std::vector <Player> player;
     long double KEYFRAME_DURATION_TIME = 0.026; // seconds
     long START_DRAWING_DELAY = 1500; // milliseconds
     static const long MIN_TIME_OF_DRAWING = 4000; // milliseconds
@@ -26,27 +27,26 @@ private:
     static const long MIN_TIME_OF_DELAY = 200; // milliseconds
     static const long MAX_TIME_OF_DELAY = 400; // milliseconds
     static const int NUMBER_OF_PLAYERS = 4;
-    int currentNumberOfPlayers;
     static const int WIDTH = 900;
     static const int HEIGHT = 700;
     bool STILL_TIMING = FALSE;
     bool STILL_PLAYING = FALSE;
 public:
-    Board() {}
+    Board();
     static Board& getInstance() {
         static Board instance;
         return instance;
     }
-    void setServers(TcpServer tcpServer, UdpServer udpServer);
+    //void setServers(TcpServer tcpServer, UdpServer udpServer);
+    void start(int numberOfPlayers, TcpServer tcpServer, UdpServer udpServer);
+    void initPlayers(int maxNumberOfPlayers);
 
     static int getNumberOfPlayers();
     static bool outOfBounds(Point p);
     static bool areIntersecting(Point p1, Point p2, Point q1, Point q2);
     void startDrawing();
     void stopDrawing();
-    void initPlayers(int maxNumberOfPlayers);
     void checkCollision();
-    void start();
     void TimerTask(int interval, bool executor);
 
     bool checkStillTiming();

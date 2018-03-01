@@ -9,41 +9,54 @@
 //#include <synchapi.h>
 
 #define PI 3.14
-using namespace std;
 
-void Board::setServers(TcpServer tcpServer, UdpServer udpServer) {
+Board::Board() {
+    //colors[0] = "0x000000";
+    //colors[1] = "0x00005F";
+    //colors[2] = "0x00008F";
+    //colors[3] = "0x0000FF";
+}
+
+void Board::start(int numberOfPlayers, TcpServer tcpServer, UdpServer udpServer) {
+    this->numberOfPlayers = numberOfPlayers;
     this->tcpServer = tcpServer;
     this->udpServer = udpServer;
+    srand(time(NULL));
+    initPlayers(numberOfPlayers);
+    //start thread
+    std::cout << "Board:start() is running!" << std::endl;
+    // init players
+    // schedule startDrawing()
+    // this.drawLines(player[i]) (client - ?)
+    // add handle to timeline and start
 }
-
-Player Board::player[4];
-string Board::colors[4] = {"0x000000", "0x00005F", "0x00008F", "0x0000FF"};
-int tmp_num_players = Board::getNumberOfPlayers();
-using namespace std::chrono;
 
 void Board::initPlayers(const int maxNumberOfPlayers) {
-    //cout<<"Initiation of players \n";
     if (maxNumberOfPlayers == 1) {
-        player[0] = Player(WIDTH / 2.0, HEIGHT / 2.0, rand() * 2 * PI, colors[0]);
+        player.emplace_back(Player(WIDTH / 2.0, HEIGHT / 2.0, std::rand() * 2 * PI));//, colors[0]));
     } else if (maxNumberOfPlayers == 2) {
-        player[0] = Player(WIDTH / 3.0, HEIGHT / 2.0, rand() * 2 * PI, colors[0]);
-        player[1] = Player(2 * WIDTH / 3.0, HEIGHT / 2.0, rand() * 2 * PI, colors[1]);
+        player.emplace_back(Player(WIDTH / 3.0, HEIGHT / 2.0, std::rand() * 2 * PI));//, colors[0]));
+        player.emplace_back(Player(2 * WIDTH / 3.0, HEIGHT / 2.0, std::rand() * 2 * PI));//, colors[1]));
     } else if (maxNumberOfPlayers == 3) {
-        player[0] = Player(WIDTH / 3.0, HEIGHT / 2.0, rand() * 2 * PI, colors[0]);
-        player[1] = Player(2 * WIDTH / 3.0, HEIGHT / 2.0, rand() * 2 * PI, colors[1]);
-        player[2] = Player(WIDTH / 2.0, 2 * HEIGHT / 3.0, rand() * 2 * PI, colors[2]);
+        player.emplace_back(Player(WIDTH / 3.0, HEIGHT / 2.0, std::rand() * 2 * PI));//, colors[0]));
+        player.emplace_back(Player(2 * WIDTH / 3.0, HEIGHT / 2.0, std::rand() * 2 * PI));//, colors[1]));
+        player.emplace_back(Player(WIDTH / 2.0, 2 * HEIGHT / 3.0, std::rand() * 2 * PI));//, colors[2]));
     } else if (maxNumberOfPlayers == 4) {
-        player[0] = Player(WIDTH / 3.0, HEIGHT / 3.0, rand() * 2 * PI, colors[0]);
-        player[1] = Player(2 * WIDTH / 3.0, HEIGHT / 3.0, rand() * 2 * PI, colors[1]);
-        player[2] = Player(WIDTH / 3.0, 2 * HEIGHT / 3.0, rand() * 2 * PI, colors[2]);
-        player[3] = Player(2 * WIDTH / 3.0, 2 * HEIGHT / 3.0, rand() * 2 * PI, colors[3]);
+        player.emplace_back(Player(WIDTH / 3.0, HEIGHT / 3.0, std::rand() * 2 * PI));//, colors[0]));
+        player.emplace_back(Player(2 * WIDTH / 3.0, HEIGHT / 3.0, std::rand() * 2 * PI));//, colors[1]));
+        player.emplace_back(Player(WIDTH / 3.0, 2 * HEIGHT / 3.0, std::rand() * 2 * PI));//, colors[2]));
+        player.emplace_back(Player(2 * WIDTH / 3.0, 2 * HEIGHT / 3.0, std::rand() * 2 * PI));//, colors[3]));
     }
-    //cout<<"Players initialized !! \n";
 }
 
-Board::Board(int maxNumberOfPlayers) {
+//Player Board::player[4];
+//string Board::colors[4] = {"0x000000", "0x00005F", "0x00008F", "0x0000FF"};
+//int tmp_num_players = Board::getNumberOfPlayers();
+using namespace std::chrono;
+
+/*Board::Board(int maxNumberOfPlayers) {
     initPlayers(Board::getNumberOfPlayers());
-}
+}*/
 
 void Board::startDrawing() {
     for (Player p : player) {
@@ -62,7 +75,7 @@ void Board::stopDrawing() {
     //timer.schedule ...
 }
 
-void Board::start() {
+/*void Board::start() {
     while(checkStillPlaying()) {
 
         while(checkStillTiming()){
@@ -70,7 +83,7 @@ void Board::start() {
                 player[i].generateNextLine();
             }
             checkCollision();
-            if (currentNumberOfPlayers <= 1)
+            if (numberOfPlayers <= 1)
                 setStillPlaying(FALSE); // LAST PLAYER LEFT - GAME OVER
 
             if (!checkStillPlaying()) {
@@ -82,7 +95,7 @@ void Board::start() {
         }
     }
     //return;
-}
+}*/
 
 void Board::TimerTask(int interval, bool executor) {
     interval = 0;
@@ -182,7 +195,7 @@ void Board::checkCollision() {
                     Point p2 = jVisited.at(k + 1);
                     if (!p1.isGap() && areIntersecting(p1, p2, nextToLast, last)) {
                         player[i].setNowPlaying(false);
-                        if (--currentNumberOfPlayers <= 1) {
+                        if (--numberOfPlayers <= 1) {
                             //this.showResults(); // dopiero bedzie zaimplementowana ! <na samym dole>
                             return;
                         }
