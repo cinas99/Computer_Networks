@@ -59,8 +59,14 @@ public class Board {
         this.tcpClient = tcpClient;
         this.udpClient = udpClient;
 
-        StackPane layout = new StackPane();
-        layout.getChildren().add(label);
+        root.getChildren().add(canvas);
+        root.getChildren().add(label);
+        primaryStage.setTitle(TITLE);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+
+        //StackPane layout = new StackPane();
+        //layout.getChildren().add(label);
 
         primaryStage.setOnCloseRequest((WindowEvent event) -> {
             try {
