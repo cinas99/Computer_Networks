@@ -17,9 +17,10 @@ private:
     TcpServer tcpServer;
     UdpServer udpServer;
     int numberOfPlayers;
+    std::vector <Player> player;
+    bool run;
     //string colors[4];
 
-    std::vector <Player> player;
     long double KEYFRAME_DURATION_TIME = 0.026; // seconds
     long START_DRAWING_DELAY = 1500; // milliseconds
     static const long MIN_TIME_OF_DRAWING = 4000; // milliseconds
@@ -40,6 +41,7 @@ public:
     //void setServers(TcpServer tcpServer, UdpServer udpServer);
     void start(int numberOfPlayers, TcpServer tcpServer, UdpServer udpServer);
     void initPlayers(int maxNumberOfPlayers);
+    void nextStep();
 
     static int getNumberOfPlayers();
     static bool outOfBounds(Point p);

@@ -6,6 +6,9 @@
 #include <random>
 #include <bits/unique_ptr.h>
 #include <unistd.h>
+//#include <boost/asio.hpp>
+//#include <boost/bind.hpp>
+//#include <boost/date_time/posix_time/posix_time.hpp>
 //#include <synchapi.h>
 
 #define PI 3.14
@@ -17,16 +20,27 @@ Board::Board() {
     //colors[3] = "0x0000FF";
 }
 
+void Board::nextStep() { //timeline
+    while (run) {
+        int size = player.size();
+        for (int i=0; i<size; i++) {
+            player[i].generateNextLine();
+        }
+        checkCollision();
+        //sleep(KEYFRAME_DURATION_TIME);
+    }
+}
+
 void Board::start(int numberOfPlayers, TcpServer tcpServer, UdpServer udpServer) {
+    this->run = true;
     this->numberOfPlayers = numberOfPlayers;
     this->tcpServer = tcpServer;
     this->udpServer = udpServer;
     srand(time(NULL));
     initPlayers(numberOfPlayers);
     //start thread
-    std::cout << "Board:start() is running!" << std::endl;
-    // init players
-    // schedule startDrawing()
+    std::cout << "Board:start() is running!" << std::endl << std::endl;
+    // timer schedule startDrawing()
     // this.drawLines(player[i]) (client - ?)
     // add handle to timeline and start
 }
@@ -62,7 +76,13 @@ void Board::startDrawing() {
     for (Player p : player) {
         p.setDraw(true);
     }
-    long double time = round(MIN_TIME_OF_DRAWING + rand() * (MAX_TIME_OF_DRAWING - MIN_TIME_OF_DRAWING));
+    long double time = round(MIN_TIME_OF_DRAWING + std::rand() * (MAX_TIME_OF_DRAWING - MIN_TIME_OF_DRAWING));
+    //boost::asio::io_service io;
+
+    //boost::asio::deadline_timer t(io, boost::posix_time::seconds(3));
+    //t.async_wait(boost::bind(&Board::stopDrawing, this));
+
+    //io.run();
     //timer.schedule ...
 }
 
@@ -71,7 +91,8 @@ void Board::stopDrawing() {
         p.markGap();
         p.setDraw(false);
     }
-    long double time = round(MIN_TIME_OF_DELAY + rand() * (MAX_TIME_OF_DELAY - MIN_TIME_OF_DELAY));
+    long double time = round(MIN_TIME_OF_DELAY + std::rand() * (MAX_TIME_OF_DELAY - MIN_TIME_OF_DELAY));
+
     //timer.schedule ...
 }
 

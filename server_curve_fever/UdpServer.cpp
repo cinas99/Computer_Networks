@@ -35,9 +35,20 @@ std::string UdpServer::receive(Player *player) {
     sockaddr_in clientSockAddr = player->getSockAddr();
     socklen_t clientSockAddrLen = sizeof(clientSockAddr);
     recvfrom(nSocket, buf, BUF_SIZE, 0, (struct sockaddr*)&clientSockAddr, &clientSockAddrLen);
-    player->setSockAddr(clientSockAddr);
+    //player->setSockAddr(clientSockAddr);
     std::string s(buf);
     return s;
+}
+
+int UdpServer::receiveInt(Player *player) {
+    int32_t result;
+    sockaddr_in clientSockAddr = player->getSockAddr();
+    socklen_t clientSockAddrLen = sizeof(clientSockAddr);
+    recvfrom(nSocket, &result, sizeof(int), 0, (struct sockaddr*)&clientSockAddr, &clientSockAddrLen);
+    player->setSockAddr(clientSockAddr);
+    return ntohl(result);
+    //std::string s(buf);
+    //return s;
 }
 
 void UdpServer::send(Player *player, std::string msg) {

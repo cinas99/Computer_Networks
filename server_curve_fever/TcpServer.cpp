@@ -49,40 +49,6 @@ int TcpServer::clientAccept(sockaddr_in *clientSockAddr) {
     return nClientSocket;
 }
 
-void TcpServer::turnOnSend(int tcpSocket) {
-    sendInt(tcpSocket, TURN_ON);
-}
-
-void TcpServer::roomEventSend(int tcpSocket, int playersInRoom, std::vector<Player*> connectedPlayers) {
-    sendInt(tcpSocket, ROOM_EVENT);
-    sendInt(tcpSocket, playersInRoom);
-    for (std::vector<Player*>::iterator it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
-        if ((*it)->isInRoom()) {
-            sendString(tcpSocket, (*it)->getNick());
-            if ((*it)->isReady())
-                sendInt(tcpSocket, TRUE);
-            else
-                sendInt(tcpSocket, FALSE);
-        }
-    }
-}
-
-std::string TcpServer::joinReceive(int tcpSocket) {
-    return receive(tcpSocket);
-}
-
-void TcpServer::joinSend(int tcpSocket) {
-    sendInt(tcpSocket, JOIN);
-}
-
-void TcpServer::unjoinSend(int tcpSocket) {
-    sendInt(tcpSocket, UNJOIN);
-}
-
-void TcpServer::startSend(int tcpSocket) {
-    sendInt(tcpSocket, START);
-}
-
 std::string TcpServer::receive(int tcpSocket) {
     int size = receiveInt(tcpSocket);
     char buf[BUF_SIZE];

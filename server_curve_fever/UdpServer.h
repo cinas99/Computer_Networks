@@ -29,6 +29,7 @@ public:
     UdpServer();
     int init();
     std::string receive(Player *player);
+    int receiveInt(Player *player);
     void send(Player *player, std::string msg);
     void closeSocket();
 };

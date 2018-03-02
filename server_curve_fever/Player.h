@@ -26,6 +26,7 @@ private:
     std::string nick;
     bool inRoom;
     bool ready;
+    //bool isConnectedViaUdp;
     double LINEAR_SPEED = 2.8;
     double CIRCULAR_SPEED = 0.12;
     vector<Point> visited;

@@ -30,20 +30,12 @@ public:
     void init();
     int clientAccept(sockaddr_in *clientSockAddr);
 
-    void turnOnSend(int tcpSocket);
-    std::string joinReceive(int tcpSocket);
-    void joinSend(int tcpSocket);
-    void unjoinSend(int tcpSocket);
-    void roomEventSend(int tcpSocket, int playersInRoom, std::vector<Player *> connectedPlayers);
-    void startSend(int tcpSocket);
-
     std::string receive(int tcpSocket);
     int receiveInt(int tcpSocket);
     void send(int tcpSocket, const char* msg);
     void sendString(int tcpSocket, std::string msg);
     void sendInt(int tcpSocket, int num);
     void closeSocket();
-    //~TcpServer();
 
 };
 
