@@ -10,6 +10,8 @@ public enum Message {
     START,
     ROOM_EVENT,
     UDP_CONNECT,
+    FIRST_UDP_MESSAGE,
+    CONFIRM_UDP_MESSAGE,
     DISCONNECT,
     TRUE,
     FALSE

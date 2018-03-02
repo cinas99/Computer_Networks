@@ -21,6 +21,7 @@ import java.util.Timer;
 
 import static java.lang.Math.*;
 
+import pl.poznan.put.client.Message;
 import pl.poznan.put.client.TcpClient;
 import pl.poznan.put.client.UdpClient;
 
@@ -50,10 +51,12 @@ public class Board {
     private GraphicsContext gc = canvas.getGraphicsContext2D();
     private Player [] player;
 
+    private static final int WAIT_FOR_UDP_CONFIRM = 200; // milliseconds
+    private static boolean connectionEstablished = false;
     private TcpClient tcpClient;
     private UdpClient udpClient;
     private Stage primaryStage = new Stage();
-    private Label label = new Label("Waiting for server...");;
+    private Label label = new Label("Waiting for server...");
 
     public Board(TcpClient tcpClient, UdpClient udpClient) throws IOException {
         this.tcpClient = tcpClient;
@@ -80,6 +83,16 @@ public class Board {
     }
 
     public void start() {
+        while(!connectionEstablished) {
+            try {
+                udpClient.sendInt(Message.FIRST_UDP_MESSAGE.ordinal());
+                Thread.sleep(WAIT_FOR_UDP_CONFIRM);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         label.setText("Server confirmed! Let's start a game!");
         /*try {
             udpClient.send("udp test message");
@@ -132,6 +145,10 @@ public class Board {
         primaryStage.setTitle(TITLE);
         primaryStage.setScene(scene);
         primaryStage.show();*/
+    }
+
+    public static void setConnectionEstablished(boolean isEstablished) {
+        connectionEstablished = isEstablished;
     }
 
     private void showResults() {

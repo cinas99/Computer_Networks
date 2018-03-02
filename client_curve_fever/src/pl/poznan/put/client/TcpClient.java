@@ -1,5 +1,7 @@
 package pl.poznan.put.client;
 
+import pl.poznan.put.game.Board;
+
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -22,7 +24,7 @@ public class TcpClient {
             try {
                 while (true) {
                     int msg = receiveInt();
-                    System.out.println("Tcp receive: (message) " + msg);
+                    //System.out.println("Tcp receive: (message) " + msg);
                     Message message = Message.values()[msg];
                     switch (message) {
                         case TURN_ON:
@@ -41,8 +43,12 @@ public class TcpClient {
                             TcpClient.this.roomEventReceive();
                             break;
                         case START:
-                            System.out.println("Tcp receive: Server is ready! Let's start a game...");
+                            System.out.println("Tcp receive: Server is ready!\n");
                             TcpClient.this.startReceive();
+                            break;
+                        case CONFIRM_UDP_MESSAGE:
+                            System.out.println("Tcp receive: Udp connection is established! Let's start a game...\n");
+                            TcpClient.this.confirmUdpMessage();
                             break;
                     }
                 }
@@ -80,7 +86,7 @@ public class TcpClient {
     }
 
     public void turnOnSend() throws IOException {
-        System.out.println("Tcp send: Turn on");
+        System.out.println("Tcp send: Turn on\n");
         receivingTcpThread = new ReceivingTcpThread();
         receivingTcpThread.setDaemon(true);
         receivingTcpThread.start();
@@ -124,6 +130,9 @@ public class TcpClient {
         controller.startGame();
     }
 
+    public void confirmUdpMessage() {
+        Board.setConnectionEstablished(true);
+    }
 
     public void send(String msg) throws IOException {
         dataOutputStream.flush();

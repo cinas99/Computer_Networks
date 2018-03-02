@@ -2,6 +2,7 @@ package pl.poznan.put.client;
 
 import java.io.*;
 import java.net.*;
+import java.nio.ByteBuffer;
 import java.util.Properties;
 
 public class UdpClient {
@@ -15,11 +16,11 @@ public class UdpClient {
 
         @Override
         public void run() {
-            System.out.println("Udp receive: is running!");
+            System.out.println("Udp receive: is running!\n");
             while (true) {
                 try {
                     String msg = receive();
-                    System.out.println("Udp receive: (message) " + msg);
+                    System.out.println("Udp receive: (message) " + msg + "\n");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -50,12 +51,26 @@ public class UdpClient {
         sock.send(out);
     }
 
+    public void sendInt(int num) throws IOException {
+        byte[] buf = ByteBuffer.allocate(4).putInt(num).array();
+        DatagramPacket out = new DatagramPacket(buf, buf.length, addr);
+        sock.send(out);
+    }
+
     public String receive() throws IOException {
         byte[] buf = new byte[BUF_SIZE];
         DatagramPacket in = new DatagramPacket(buf, BUF_SIZE);
         sock.receive(in);
         return new String(in.getData());
     }
+
+    /*public int receiveInt() throws IOException {
+        byte[] buf = new byte[BUF_SIZE];
+        DatagramPacket in = new DatagramPacket(buf, BUF_SIZE);
+        sock.receive(in);
+        ByteBuffer wrapped = ByteBuffer.wrap(in.getData());
+        return wrapped.getInt();
+    }*/
 
     public void close() {
         sock.close();
