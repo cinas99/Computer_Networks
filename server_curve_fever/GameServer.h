@@ -39,16 +39,16 @@ private:
 public:
     GameServer();
     void tcpReceive(int tcpSocket, sockaddr_in clientSockAddr);
-    void tcpSend(Player *player, SafeQueue<Message> *tcpQueue);
-    void udpReceive(Player *player, SafeQueue<Message> *tcpQueue);
-    void udpSend(Player *player, SafeQueue<Message> *tcpQueue, SafeQueue<string> *udpQueue);
+    void tcpSend(Player *player);
+    void udpReceive(Player *player);
+    void udpSend(Player *player);
     void run();
 
     void roomEventSend(int tcpSocket, int playersInRoom);
     bool isEveryoneReady();
     bool isFreeSeat();
     int countRoomPlayers();
-    int countGamePlayers();
+    std::vector <Player*> getGamePlayers();
     void deletePlayer(Player player);
 };
 

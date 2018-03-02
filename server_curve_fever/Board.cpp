@@ -6,94 +6,98 @@
 #include <random>
 #include <bits/unique_ptr.h>
 #include <unistd.h>
-//#include <boost/asio.hpp>
-//#include <boost/bind.hpp>
-//#include <boost/date_time/posix_time/posix_time.hpp>
+#include <thread>
 //#include <synchapi.h>
 
 #define PI 3.14
 
 Board::Board() {
+    this->currentNumberOfPlayers = 0;
     //colors[0] = "0x000000";
     //colors[1] = "0x00005F";
     //colors[2] = "0x00008F";
     //colors[3] = "0x0000FF";
 }
 
-void Board::nextStep() { //timeline
+void Board::threadDrawing() {
+    std::this_thread::sleep_for(std::chrono::milliseconds(START_DRAWING_DELAY));
     while (run) {
-        int size = player.size();
-        for (int i=0; i<size; i++) {
-            player[i].generateNextLine();
+        startDrawing();
+        const int stopTime = round(MIN_TIME_OF_DRAWING + random() * (MAX_TIME_OF_DRAWING - MIN_TIME_OF_DRAWING));
+        std::this_thread::sleep_for(std::chrono::milliseconds(stopTime));
+        if (run) {
+            stopDrawing();
+            const int startTime = round(MIN_TIME_OF_DELAY + random() * (MAX_TIME_OF_DELAY - MIN_TIME_OF_DELAY));
+            std::this_thread::sleep_for(std::chrono::milliseconds(startTime));
         }
-        checkCollision();
-        //sleep(KEYFRAME_DURATION_TIME);
+        else
+            break;
     }
+    std::cout << "Board: drawing is finished!" << std::endl;
 }
 
-void Board::start(int numberOfPlayers, TcpServer tcpServer, UdpServer udpServer) {
-    this->run = true;
-    this->numberOfPlayers = numberOfPlayers;
-    this->tcpServer = tcpServer;
-    this->udpServer = udpServer;
-    srand(time(NULL));
-    initPlayers(numberOfPlayers);
-    //start thread
-    std::cout << "Board:start() is running!" << std::endl << std::endl;
-    // timer schedule startDrawing()
-    // this.drawLines(player[i]) (client - ?)
-    // add handle to timeline and start
+void Board::threadGenerateLines() {
+    while (run) {
+        for (int i=0; i<currentNumberOfPlayers; i++) {
+            player[i]->generateNextLine();
+        }
+        checkCollision();
+        std::this_thread::sleep_for(std::chrono::milliseconds(KEYFRAME_DURATION_TIME));
+    }
+    std::cout << "Board: generating lines is finished!" << std::endl;
+}
+
+void Board::start(std::vector <Player*> player) {
+    this->currentNumberOfPlayers++;
+    int size = player.size();
+    if (this->currentNumberOfPlayers == size) {
+        srand(time(NULL));
+        this->run = true;
+        this->player = player;
+        this->numberOfPlayers = player.size();
+
+        initPlayers(size);
+        thread gapGenerator(&Board::threadDrawing, this);
+        gapGenerator.detach();
+        thread lineGenerator(&Board::threadGenerateLines, this);
+        lineGenerator.detach();
+        std::cout << "Board:start() is running!" << std::endl << std::endl;
+    }
 }
 
 void Board::initPlayers(const int maxNumberOfPlayers) {
     if (maxNumberOfPlayers == 1) {
-        player.emplace_back(Player(WIDTH / 2.0, HEIGHT / 2.0, std::rand() * 2 * PI));//, colors[0]));
+        player[0]->init(WIDTH / 2.0, HEIGHT / 2.0, random() * 2 * PI);
     } else if (maxNumberOfPlayers == 2) {
-        player.emplace_back(Player(WIDTH / 3.0, HEIGHT / 2.0, std::rand() * 2 * PI));//, colors[0]));
-        player.emplace_back(Player(2 * WIDTH / 3.0, HEIGHT / 2.0, std::rand() * 2 * PI));//, colors[1]));
+        player[0]->init(WIDTH / 3.0, HEIGHT / 2.0, random() * 2 * PI);
+        player[1]->init(2 * WIDTH / 3.0, HEIGHT / 2.0, random() * 2 * PI);
     } else if (maxNumberOfPlayers == 3) {
-        player.emplace_back(Player(WIDTH / 3.0, HEIGHT / 2.0, std::rand() * 2 * PI));//, colors[0]));
-        player.emplace_back(Player(2 * WIDTH / 3.0, HEIGHT / 2.0, std::rand() * 2 * PI));//, colors[1]));
-        player.emplace_back(Player(WIDTH / 2.0, 2 * HEIGHT / 3.0, std::rand() * 2 * PI));//, colors[2]));
+        player[0]->init(WIDTH / 3.0, HEIGHT / 2.0, random() * 2 * PI);
+        player[1]->init(2 * WIDTH / 3.0, HEIGHT / 2.0, random() * 2 * PI);
+        player[2]->init(WIDTH / 2.0, 2 * HEIGHT / 3.0, random() * 2 * PI);
     } else if (maxNumberOfPlayers == 4) {
-        player.emplace_back(Player(WIDTH / 3.0, HEIGHT / 3.0, std::rand() * 2 * PI));//, colors[0]));
-        player.emplace_back(Player(2 * WIDTH / 3.0, HEIGHT / 3.0, std::rand() * 2 * PI));//, colors[1]));
-        player.emplace_back(Player(WIDTH / 3.0, 2 * HEIGHT / 3.0, std::rand() * 2 * PI));//, colors[2]));
-        player.emplace_back(Player(2 * WIDTH / 3.0, 2 * HEIGHT / 3.0, std::rand() * 2 * PI));//, colors[3]));
+        player[0]->init(WIDTH / 3.0, HEIGHT / 3.0, random() * 2 * PI);
+        player[1]->init(2 * WIDTH / 3.0, HEIGHT / 3.0, random() * 2 * PI);
+        player[2]->init(WIDTH / 3.0, 2 * HEIGHT / 3.0, random() * 2 * PI);
+        player[3]->init(2 * WIDTH / 3.0, 2 * HEIGHT / 3.0, random() * 2 * PI);
     }
 }
 
-//Player Board::player[4];
-//string Board::colors[4] = {"0x000000", "0x00005F", "0x00008F", "0x0000FF"};
-//int tmp_num_players = Board::getNumberOfPlayers();
-using namespace std::chrono;
-
-/*Board::Board(int maxNumberOfPlayers) {
-    initPlayers(Board::getNumberOfPlayers());
-}*/
+double Board::random() {
+    return static_cast <double> (std::rand()) / static_cast <double> (RAND_MAX);
+}
 
 void Board::startDrawing() {
-    for (Player p : player) {
-        p.setDraw(true);
+    for (Player *p : player) {
+        p->setDraw(true);
     }
-    long double time = round(MIN_TIME_OF_DRAWING + std::rand() * (MAX_TIME_OF_DRAWING - MIN_TIME_OF_DRAWING));
-    //boost::asio::io_service io;
-
-    //boost::asio::deadline_timer t(io, boost::posix_time::seconds(3));
-    //t.async_wait(boost::bind(&Board::stopDrawing, this));
-
-    //io.run();
-    //timer.schedule ...
 }
 
 void Board::stopDrawing() {
-    for (Player p : player) {
-        p.markGap();
-        p.setDraw(false);
+    for (Player *p : player) {
+        p->markGap();
+        p->setDraw(false);
     }
-    long double time = round(MIN_TIME_OF_DELAY + std::rand() * (MAX_TIME_OF_DELAY - MIN_TIME_OF_DELAY));
-
-    //timer.schedule ...
 }
 
 /*void Board::start() {
@@ -104,7 +108,7 @@ void Board::stopDrawing() {
                 player[i].generateNextLine();
             }
             checkCollision();
-            if (numberOfPlayers <= 1)
+            if (currentNumberOfPlayers <= 1)
                 setStillPlaying(FALSE); // LAST PLAYER LEFT - GAME OVER
 
             if (!checkStillPlaying()) {
@@ -118,7 +122,7 @@ void Board::stopDrawing() {
     //return;
 }*/
 
-void Board::TimerTask(int interval, bool executor) {
+/*void Board::TimerTask(int interval, bool executor) {
     interval = 0;
     sleep(10);
     while (executor) {
@@ -128,7 +132,7 @@ void Board::TimerTask(int interval, bool executor) {
             interval = 0;
         }
     }
-}
+}*/
 
 bool Board::outOfBounds(Point p) {
     return (p.getX() > WIDTH || p.getX() < 0 || p.getY() > HEIGHT || p.getY() < 0);
@@ -150,9 +154,9 @@ void Board::setStillPlaying(bool cond) {
     STILL_PLAYING = cond;
 }
 
-int Board::getNumberOfPlayers() {
-    return NUMBER_OF_PLAYERS;
-}
+/*int Board::getNumberOfPlayers() {
+    return numberOfPlayers;
+}*/
 
 bool Board::areIntersecting(Point p1, Point p2, Point q1, Point q2) {
     bool result = 0;
@@ -202,22 +206,23 @@ bool Board::areIntersecting(Point p1, Point p2, Point q1, Point q2) {
 }
 
 void Board::checkCollision() {
-    for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-        if (!player[i].isNowPlaying()) continue;
-        const vector<Point> iVisited = player[i].getVisited();
+    //const int NUMBER_OF_PLAYERS = player.size();
+    for (int i = 0; i < numberOfPlayers; i++) {
+        if (!player[i]->isNowPlaying()) continue;
+        const vector<Point> iVisited = player[i]->getVisited();
         if (iVisited.size() > 1) {
             Point last = iVisited.at(iVisited.size() - 1);
             Point nextToLast = iVisited.at(iVisited.size() - 2);
-            for (int j = 0; j < NUMBER_OF_PLAYERS; j++) {
-                const vector<Point> jVisited = player[j].getVisited();
+            for (int j = 0; j < numberOfPlayers; j++) {
+                const vector<Point> jVisited = player[j]->getVisited();
                 const int sizeToCheck = (i == j) ? jVisited.size() - 3 : jVisited.size() - 1;
-                for (unsigned int k = 0; k < sizeToCheck; k++) {
+                for (int k = 0; k < sizeToCheck; k++) {
                     Point p1 = jVisited.at(k);
                     Point p2 = jVisited.at(k + 1);
                     if (!p1.isGap() && areIntersecting(p1, p2, nextToLast, last)) {
-                        player[i].setNowPlaying(false);
-                        if (--numberOfPlayers <= 1) {
-                            //this.showResults(); // dopiero bedzie zaimplementowana ! <na samym dole>
+                        player[i]->setNowPlaying(false);
+                        if (--currentNumberOfPlayers <= 1) {
+                            showResults();
                             return;
                         }
                     }
@@ -227,16 +232,34 @@ void Board::checkCollision() {
     }
 
     // to know number of pts to check
-    int mySize = 0;
+    /*int mySize = 0;
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-        mySize += player[i].getVisited().size();
+        mySize += player[i]->getVisited().size();
     }
-    cout << mySize;
+    cout << mySize;*/
 }
 
 
 //ShowResults - przemyslec i gdzies dokomponowac
 // ? w Serwerze //TODO LATER //
+
+void Board::showResults() {
+    int winnerIndex;
+    if (numberOfPlayers == 1) {
+        winnerIndex = 0;
+    }
+    else {
+        //winnerIndex = -1;
+        for (int i=0; i<numberOfPlayers; i++) {
+            if (player[i]->isNowPlaying())
+                winnerIndex = i;
+        }
+    }
+    this->run = false;
+    std::cout << "Winner is player " << winnerIndex << std::endl;
+    // stop timeline
+    // send info about winner
+}
 
 /*
 void Board::showResults() {

@@ -9,27 +9,30 @@
 #include "TcpServer.h"
 #include "UdpServer.h"
 #include <string.h>
+#include <mutex>
 
 class Board {
 private:
-    Board(Board const&);
-    void operator=(Board const&);
-    TcpServer tcpServer;
-    UdpServer udpServer;
-    int numberOfPlayers;
-    std::vector <Player> player;
-    bool run;
-    //string colors[4];
-
-    long double KEYFRAME_DURATION_TIME = 0.026; // seconds
-    long START_DRAWING_DELAY = 1500; // milliseconds
-    static const long MIN_TIME_OF_DRAWING = 4000; // milliseconds
-    static const long MAX_TIME_OF_DRAWING = 6000; // milliseconds
-    static const long MIN_TIME_OF_DELAY = 200; // milliseconds
-    static const long MAX_TIME_OF_DELAY = 400; // milliseconds
-    static const int NUMBER_OF_PLAYERS = 4;
+    const long START_DRAWING_DELAY = 1500; // milliseconds
+    const long MIN_TIME_OF_DRAWING = 4000; // milliseconds
+    const long MAX_TIME_OF_DRAWING = 6000; // milliseconds
+    const long MIN_TIME_OF_DELAY = 200; // milliseconds
+    const long MAX_TIME_OF_DELAY = 400; // milliseconds
+    const int KEYFRAME_DURATION_TIME = 26; // milliseconds
     static const int WIDTH = 900;
     static const int HEIGHT = 700;
+
+    Board(Board const&);
+    void operator=(Board const&);
+
+    int numberOfPlayers;
+    int currentNumberOfPlayers;
+    std::vector <Player*> player;
+    bool run;
+    //mutex m;
+    //string colors[4];
+
+    //static const int NUMBER_OF_PLAYERS = 4;
     bool STILL_TIMING = FALSE;
     bool STILL_PLAYING = FALSE;
 public:
@@ -39,15 +42,21 @@ public:
         return instance;
     }
     //void setServers(TcpServer tcpServer, UdpServer udpServer);
-    void start(int numberOfPlayers, TcpServer tcpServer, UdpServer udpServer);
+    void start(std::vector <Player*> player);//, TcpServer tcpServer, UdpServer udpServer);
     void initPlayers(int maxNumberOfPlayers);
-    void nextStep();
+    void threadDrawing();
+    void threadGenerateLines();
 
-    static int getNumberOfPlayers();
-    static bool outOfBounds(Point p);
-    static bool areIntersecting(Point p1, Point p2, Point q1, Point q2);
+    void showResults();
+    static double random();
     void startDrawing();
     void stopDrawing();
+
+    //static int getNumberOfPlayers();
+    static bool outOfBounds(Point p);
+    static bool areIntersecting(Point p1, Point p2, Point q1, Point q2);
+    //void startDrawing();
+    //void stopDrawing();
     void checkCollision();
     void TimerTask(int interval, bool executor);
 

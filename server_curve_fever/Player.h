@@ -15,39 +15,51 @@
 #include <string.h>
 #include <arpa/inet.h>
 #include "Point.h"
+#include "SafeQueue.h"
+#include "Message.h"
 #include <vector>
 #include <string>
 using namespace std;
 
 class Player {
 private:
+    const double LINEAR_SPEED = 2.8;
+    const double CIRCULAR_SPEED = 0.12;
+
     int tcpSocket;
     sockaddr_in clientSockAddr;
+    SafeQueue <Message> *tcpQueue;
+    SafeQueue <string> *udpQueue;
+
     std::string nick;
+    vector<Point> visited;
     bool inRoom;
     bool ready;
+    bool draw;
+    bool nowPlaying;
+
     //bool isConnectedViaUdp;
-    double LINEAR_SPEED = 2.8;
-    double CIRCULAR_SPEED = 0.12;
-    vector<Point> visited;
-    Point cur_point = setCurPoint(currentX, currentY);
+
+    //Point cur_point = setCurPoint(currentX, currentY);
     //string color; // zamiast wektora moze tablica ??
     double currentX;
     double currentY;
     double angle;
     int turn;
-    bool draw;
-    bool nowPlaying;
 
 public:
     //Player();
-
-    Player(double startX, double startY, double angle);
-
+    //Player(double startX, double startY, double angle);
+    Player(int tcpSocket, sockaddr_in clientSockAddr, SafeQueue <Message> *tcpQueue);
+    void init(double startX, double startY, double angle);
     //Player(double startX, double startY, double angle, std::string color);
 
     sockaddr_in getSockAddr();
     void setSockAddr(sockaddr_in clientSockAddr);
+    SafeQueue <Message> *getTcpQueue();
+    //void setTcpQueue(SafeQueue *tcpQueue);
+    SafeQueue <string> *getUdpQueue();
+    void setUdpQueue(SafeQueue <string> *udpQueue);
 
     void generateNextLine();
 
@@ -70,8 +82,6 @@ public:
     bool isNowPlaying();
 
     void setNowPlaying(bool nowPlaying);
-
-    Player(int tcpSocket, sockaddr_in clientSockAddr);
 
     void setNick(std::string nick);
 

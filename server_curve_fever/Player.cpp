@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Point.h"
+#include "Message.h"
 
 #include <math.h>
 #include <vector>
@@ -7,17 +8,39 @@
 
 //Player::Player(){};
 
-Player::Player(double startX, double startY, double angle) {
+Player::Player(int tcpSocket, sockaddr_in clientSockAddr, SafeQueue <Message> *tcpQueue) {
+    this->tcpSocket = tcpSocket;
+    this->clientSockAddr = clientSockAddr;
+    this->inRoom = false;
+    this->ready = false;
+    this->tcpQueue = tcpQueue;
+}
+
+void Player::init(double startX, double startY, double angle) {
     this->currentX = startX;
     this->currentY = startY;
     this->angle = angle;
     this->draw = false;
-    //this->color = color;
     this->nowPlaying = true;
+    //this->color = color;
     //this->cur_point = setCurPoint(startX,startY);
     Point point(currentX, currentY);
     if (draw) {
         visited.emplace_back(point);
+    }
+}
+
+void Player::generateNextLine() {
+    if (turn == -1) {
+        angle -= CIRCULAR_SPEED;
+    }
+    else if (turn == 1) {
+        angle += CIRCULAR_SPEED;
+    }
+    currentX += LINEAR_SPEED * cos(angle);
+    currentY += LINEAR_SPEED * sin(angle);
+    if (draw && nowPlaying) {
+        visited.emplace_back(Point(currentX, currentY));
     }
 }
 
@@ -34,20 +57,6 @@ Player::Player(double startX, double startY, double angle) {
         visited.emplace_back(cur_point);
     }
 }*/
-
-void Player::generateNextLine() {
-    if (turn == -1) {
-        angle -= CIRCULAR_SPEED;
-    }
-    else if (turn == 1) {
-        angle += CIRCULAR_SPEED;
-    }
-    currentX += LINEAR_SPEED * cos(angle);
-    currentY += LINEAR_SPEED * sin(angle);
-    if (draw && nowPlaying) {
-        visited.emplace_back(Point(currentX, currentY));
-    }
-}
 
 void Player::markGap() {
     if (nowPlaying) {
@@ -85,20 +94,12 @@ bool Player::isNowPlaying() {
     return nowPlaying;
 }
 
-Point Player::setCurPoint(double x, double y){
+/*Point Player::setCurPoint(double x, double y){
     cur_point = Point(x,y);
-}
+}*/
 
 void Player::setNowPlaying(bool nowPlaying) {
     this->nowPlaying = nowPlaying;
-}
-
-
-Player::Player(int tcpSocket, sockaddr_in clientSockAddr) {
-    this->tcpSocket = tcpSocket;
-    this->clientSockAddr = clientSockAddr;
-    this->inRoom = false;
-    this->ready = false;
 }
 
 void Player::setNick(std::string nick) {
@@ -120,6 +121,22 @@ sockaddr_in Player::getSockAddr() {
 void Player::setSockAddr(sockaddr_in clientSockAddr) {
     //this->clientSockAddr.sin_port = port;
     this->clientSockAddr = clientSockAddr;
+}
+
+SafeQueue <Message> *Player::getTcpQueue() {
+    return tcpQueue;
+}
+
+//void Player::setTcpQueue(SafeQueue *tcpQueue) {
+//    this->tcpQueue = tcpQueue;
+//}
+
+SafeQueue <string> *Player::getUdpQueue() {
+    return udpQueue;
+}
+
+void Player::setUdpQueue(SafeQueue <string> *udpQueue) {
+    this->udpQueue = udpQueue;
 }
 
 void Player::setInRoom(bool inRoom) {
