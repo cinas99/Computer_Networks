@@ -37,66 +37,41 @@ private:
     bool ready;
     bool draw;
     bool nowPlaying;
+    bool threadAlive;
 
-    //bool isConnectedViaUdp;
-
-    //Point cur_point = setCurPoint(currentX, currentY);
-    //string color; // zamiast wektora moze tablica ??
     double currentX;
     double currentY;
     double angle;
     int turn;
 
 public:
-    //Player();
-    //Player(double startX, double startY, double angle);
     Player(int tcpSocket, sockaddr_in clientSockAddr, SafeQueue <Message> *tcpQueue);
     Point init(double startX, double startY, double angle);
-    //Player(double startX, double startY, double angle, std::string color);
 
     sockaddr_in getSockAddr();
     void setSockAddr(sockaddr_in clientSockAddr);
     SafeQueue <Message> *getTcpQueue();
-    //void setTcpQueue(SafeQueue *tcpQueue);
     SafeQueue <string> *getUdpQueue();
     void setUdpQueue(SafeQueue <string> *udpQueue);
 
     Point generateNextLine();
-    Point getPoint(int index);
+    vector<Point> getVisited();
     int getVisitedSize();
-
     void markGap();
 
-    double getCurrentX();
-
-    double getCurrentY();
-
+    Point getPoint(int index);
     void setTurn(int turn);
-
     void setDraw(bool draw);
-
-    Point setCurPoint(double x, double y);
-
-    vector<Point> getVisited();
-
-    vector<double> getColor();
-
+    bool isThreadAlive();
+    void setThreadAlive(bool threadAlive);
     bool isNowPlaying();
-
     void setNowPlaying(bool nowPlaying);
-
     void setNick(std::string nick);
-
     std::string getNick();
-
     int getTcpSocket();
-
     void setInRoom(bool inRoom);
-
     bool isInRoom();
-
     void setReady(bool ready);
-
     bool isReady();
 
 };

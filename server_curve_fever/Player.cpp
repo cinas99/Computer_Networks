@@ -15,6 +15,7 @@ Player::Player(int tcpSocket, sockaddr_in clientSockAddr, SafeQueue <Message> *t
     this->inRoom = false;
     this->ready = false;
     this->tcpQueue = tcpQueue;
+    this->threadAlive = true;
 }
 
 Point Player::init(double startX, double startY, double angle) {
@@ -23,33 +24,24 @@ Point Player::init(double startX, double startY, double angle) {
     this->angle = angle;
     this->draw = false;
     this->nowPlaying = true;
-    //this->color = color;
-    //this->cur_point = setCurPoint(startX,startY);
     Point point(currentX, currentY, !draw);
     visited.emplace_back(point);
     return point;
 }
 
 Point Player::generateNextLine() {
-    //std::cout << "turn: " << turn << std::endl;
     if (turn == -1) {
         angle -= CIRCULAR_SPEED;
     }
     else if (turn == 1) {
         angle += CIRCULAR_SPEED;
     }
-    //std::cout << "angle: " << angle << std::endl;
     currentX += LINEAR_SPEED * cos(angle);
     currentY += LINEAR_SPEED * sin(angle);
     Point point(currentX, currentY);
-    if (!draw) //{ //} && nowPlaying) {
+    if (!draw)
         point.setGap(true);
-    //}
-    //else {
-        //point.setGap(true); //Point point(currentX, currentY, true);
-    //}
-    if (nowPlaying)
-        visited.emplace_back(point);
+    visited.emplace_back(point);
     return point;
 }
 
@@ -61,34 +53,12 @@ int Player::getVisitedSize() {
     return visited.size();
 }
 
-/*Player::Player(double startX, double startY, double angle, string color):color(std::move(color)) {
-    this->currentX = startX;
-    this->currentY = startY;
-    this->angle = angle;
-    this->draw = false;
-    this->color = color;
-    this->nowPlaying = true;
-    this->cur_point = setCurPoint(startX,startY);
-
-    if (draw) {
-        visited.emplace_back(cur_point);
-    }
-}*/
-
 void Player::markGap() {
     if (nowPlaying) {
         const int size = visited.size();
         Point last = visited[size-1];
         visited[size-1] = Point(last.getX(), last.getY(), true);
     }
-}
-
-double Player::getCurrentX() {
-    return currentX;
-}
-
-double Player::getCurrentY() {
-    return currentY;
 }
 
 void Player::setTurn(int turn) {
@@ -103,17 +73,9 @@ vector<Point> Player::getVisited() {
     return visited;
 }
 
-vector<double> Player::getColor() {
-    //return color;
-}
-
 bool Player::isNowPlaying() {
     return nowPlaying;
 }
-
-/*Point Player::setCurPoint(double x, double y){
-    cur_point = Point(x,y);
-}*/
 
 void Player::setNowPlaying(bool nowPlaying) {
     this->nowPlaying = nowPlaying;
@@ -136,17 +98,12 @@ sockaddr_in Player::getSockAddr() {
 }
 
 void Player::setSockAddr(sockaddr_in clientSockAddr) {
-    //this->clientSockAddr.sin_port = port;
     this->clientSockAddr = clientSockAddr;
 }
 
 SafeQueue <Message> *Player::getTcpQueue() {
     return tcpQueue;
 }
-
-//void Player::setTcpQueue(SafeQueue *tcpQueue) {
-//    this->tcpQueue = tcpQueue;
-//}
 
 SafeQueue <string> *Player::getUdpQueue() {
     return udpQueue;
@@ -170,4 +127,12 @@ void Player::setReady(bool ready) {
 
 bool Player::isReady() {
     return ready;
+}
+
+bool Player::isThreadAlive() {
+    return threadAlive;
+}
+
+void Player::setThreadAlive(bool threadAlive) {
+    this->threadAlive = threadAlive;
 }

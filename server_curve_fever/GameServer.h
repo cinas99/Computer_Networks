@@ -31,7 +31,7 @@ class GameServer {
 private:
     TcpServer tcpServer;
     UdpServer udpServer;
-    vector <Player*> connectedPlayers; //parallel access
+    vector <Player*> connectedPlayers;
     vector <Player*> gamePlayers;
     bool isGameStarted;
     mutex mPlayers;

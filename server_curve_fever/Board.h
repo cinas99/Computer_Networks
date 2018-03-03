@@ -23,6 +23,7 @@ private:
     static const int WIDTH = 900;
     static const int HEIGHT = 700;
 
+    Board();
     Board(Board const&);
     void operator=(Board const&);
 
@@ -30,14 +31,10 @@ private:
     int currentNumberOfPlayers;
     std::vector <Player*> player;
     bool run;
-    //mutex m;
-    //string colors[4];
 
-    //static const int NUMBER_OF_PLAYERS = 4;
-    bool STILL_TIMING = FALSE;
-    bool STILL_PLAYING = FALSE;
+    //bool STILL_TIMING = FALSE;
+    //bool STILL_PLAYING = FALSE;
 public:
-    Board();
     static Board& getInstance() {
         static Board instance;
         return instance;
@@ -63,10 +60,10 @@ public:
     void checkCollision();
     void TimerTask(int interval, bool executor);
 
-    bool checkStillTiming();
-    bool checkStillPlaying();
-    void setStillTiming(bool cond);
-    void setStillPlaying(bool cond);
+    //bool checkStillTiming();
+    //bool checkStillPlaying();
+    //void setStillTiming(bool cond);
+    //void setStillPlaying(bool cond);
     //void showResults(); // TODO LATER
     Board(int maxNumberOfPlayers);
 };

@@ -1,39 +1,25 @@
 #include "Player.h"
 #include "Board.h"
-#include "PointWrapper.h"
 #include <math.h>
-#include <iostream>
-#include <chrono>
 #include <random>
-#include <bits/unique_ptr.h>
-#include <unistd.h>
 #include <thread>
-//#include <synchapi.h>
 
-#define PI 3.14
+#define PI 3.1415926536
 
 Board::Board() {
     this->currentNumberOfPlayers = 0;
     srand(time(NULL));
-    //colors[0] = "0x000000";
-    //colors[1] = "0x00005F";
-    //colors[2] = "0x00008F";
-    //colors[3] = "0x0000FF";
 }
 
 void Board::threadDrawing() {
     std::this_thread::sleep_for(std::chrono::milliseconds(START_DRAWING_DELAY));
     while (run) {
         startDrawing();
-        //std::cout << "StartDrawing!" << std::endl;
         const int stopTime = round(MIN_TIME_OF_DRAWING + random() * (MAX_TIME_OF_DRAWING - MIN_TIME_OF_DRAWING));
-        //std::cout << "stopTime: " << stopTime << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(stopTime));
         if (run) {
             stopDrawing();
-            //std::cout << "StopDrawing!" << std::endl;
             const int startTime = round(MIN_TIME_OF_DELAY + random() * (MAX_TIME_OF_DELAY - MIN_TIME_OF_DELAY));
-            //std::cout << "startTime: " << startTime << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(startTime));
         }
         else
@@ -98,25 +84,34 @@ void Board::initPlayers(const int maxNumberOfPlayers) {
     if (maxNumberOfPlayers == 1) {
         Point point = player[0]->init(WIDTH / 2.0, HEIGHT / 2.0, random() * 2 * PI);
         newPoints.emplace_back(PointWrapper(0, player[0]->getVisitedSize() - 1, point));
-    } else if (maxNumberOfPlayers == 2) {
+    }
+    else if (maxNumberOfPlayers == 2) {
         Point point0 = player[0]->init(WIDTH / 3.0, HEIGHT / 2.0, random() * 2 * PI);
         newPoints.emplace_back(PointWrapper(0, player[0]->getVisitedSize() - 1, point0));
+
         Point point1 = player[1]->init(2 * WIDTH / 3.0, HEIGHT / 2.0, random() * 2 * PI);
         newPoints.emplace_back(PointWrapper(1, player[1]->getVisitedSize() - 1, point1));
-    } else if (maxNumberOfPlayers == 3) {
+    }
+    else if (maxNumberOfPlayers == 3) {
         Point point0 = player[0]->init(WIDTH / 3.0, HEIGHT / 2.0, random() * 2 * PI);
         newPoints.emplace_back(PointWrapper(0, player[0]->getVisitedSize() - 1, point0));
+
         Point point1 = player[1]->init(2 * WIDTH / 3.0, HEIGHT / 2.0, random() * 2 * PI);
         newPoints.emplace_back(PointWrapper(1, player[1]->getVisitedSize() - 1, point1));
+
         Point point2 = player[2]->init(WIDTH / 2.0, 2 * HEIGHT / 3.0, random() * 2 * PI);
         newPoints.emplace_back(PointWrapper(2, player[2]->getVisitedSize() - 1, point2));
-    } else if (maxNumberOfPlayers == 4) {
+    }
+    else if (maxNumberOfPlayers == 4) {
         Point point0 = player[0]->init(WIDTH / 3.0, HEIGHT / 3.0, random() * 2 * PI);
         newPoints.emplace_back(PointWrapper(0, player[0]->getVisitedSize() - 1, point0));
+
         Point point1 = player[1]->init(2 * WIDTH / 3.0, HEIGHT / 3.0, random() * 2 * PI);
         newPoints.emplace_back(PointWrapper(1, player[1]->getVisitedSize() - 1, point1));
+
         Point point2 = player[2]->init(WIDTH / 3.0, 2 * HEIGHT / 3.0, random() * 2 * PI);
         newPoints.emplace_back(PointWrapper(2, player[2]->getVisitedSize() - 1, point2));
+
         Point point3 = player[3]->init(2 * WIDTH / 3.0, 2 * HEIGHT / 3.0, random() * 2 * PI);
         newPoints.emplace_back(PointWrapper(3, player[3]->getVisitedSize() - 1, point3));
     }
@@ -140,63 +135,9 @@ void Board::stopDrawing() {
     }
 }
 
-/*void Board::start() {
-    while(checkStillPlaying()) {
-
-        while(checkStillTiming()){
-            for (int i = 0; i < tmp_num_players; i++) {
-                player[i].generateNextLine();
-            }
-            checkCollision();
-            if (currentNumberOfPlayers <= 1)
-                setStillPlaying(FALSE); // LAST PLAYER LEFT - GAME OVER
-
-            if (!checkStillPlaying()) {
-                cout << "Game over";  // JAK TO ZROBIC ZGODNIE Z SERVEREM ?
-                break;
-            }
-            sleep(100); // CZAS KWANTOWANIA
-            cout<<" Checking cycle \n";
-        }
-    }
-    //return;
-}*/
-
-/*void Board::TimerTask(int interval, bool executor) {
-    interval = 0;
-    sleep(10);
-    while (executor) {
-        interval += 1;
-        if (interval > 500) {
-            executor = checkStillTiming();
-            interval = 0;
-        }
-    }
-}*/
-
 bool Board::outOfBounds(Point p) {
     return (p.getX() > WIDTH || p.getX() < 0 || p.getY() > HEIGHT || p.getY() < 0);
 }
-
-bool Board::checkStillTiming() {
-    return STILL_TIMING;
-}
-
-bool Board::checkStillPlaying() {
-    return STILL_PLAYING;
-}
-
-void Board::setStillTiming(bool cond) {
-    STILL_TIMING = cond;
-}
-
-void Board::setStillPlaying(bool cond) {
-    STILL_PLAYING = cond;
-}
-
-/*int Board::getNumberOfPlayers() {
-    return numberOfPlayers;
-}*/
 
 bool Board::areIntersecting(Point p1, Point p2, Point q1, Point q2) {
     bool result = 0;
@@ -204,7 +145,7 @@ bool Board::areIntersecting(Point p1, Point p2, Point q1, Point q2) {
     if (outOfBounds(q2)) {
         result = true;
     }
-        // other cases when sections are intersecting
+    // other cases when sections are intersecting
     else if (p1.getX() != p2.getX() && q1.getX() != q2.getX()) {
         // count a, b parameters for two lines
         double pa = (p1.getY() - p2.getY()) / (p1.getX() - p2.getX());
@@ -246,7 +187,6 @@ bool Board::areIntersecting(Point p1, Point p2, Point q1, Point q2) {
 }
 
 void Board::checkCollision() {
-    //const int NUMBER_OF_PLAYERS = player.size();
     for (int i = 0; i < numberOfPlayers; i++) {
         if (!player[i]->isNowPlaying()) continue;
         const vector<Point> iVisited = player[i]->getVisited();
@@ -270,13 +210,6 @@ void Board::checkCollision() {
             }
         }
     }
-
-    // to know number of pts to check
-    /*int mySize = 0;
-    for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-        mySize += player[i]->getVisited().size();
-    }
-    cout << mySize;*/
 }
 
 
