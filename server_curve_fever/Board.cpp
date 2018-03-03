@@ -14,6 +14,7 @@
 
 Board::Board() {
     this->currentNumberOfPlayers = 0;
+    srand(time(NULL));
     //colors[0] = "0x000000";
     //colors[1] = "0x00005F";
     //colors[2] = "0x00008F";
@@ -24,13 +25,15 @@ void Board::threadDrawing() {
     std::this_thread::sleep_for(std::chrono::milliseconds(START_DRAWING_DELAY));
     while (run) {
         startDrawing();
-        std::cout << "StartDrawing!" << std::endl;
+        //std::cout << "StartDrawing!" << std::endl;
         const int stopTime = round(MIN_TIME_OF_DRAWING + random() * (MAX_TIME_OF_DRAWING - MIN_TIME_OF_DRAWING));
+        //std::cout << "stopTime: " << stopTime << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(stopTime));
         if (run) {
             stopDrawing();
-            std::cout << "StopDrawing!" << std::endl;
+            //std::cout << "StopDrawing!" << std::endl;
             const int startTime = round(MIN_TIME_OF_DELAY + random() * (MAX_TIME_OF_DELAY - MIN_TIME_OF_DELAY));
+            //std::cout << "startTime: " << startTime << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(startTime));
         }
         else
@@ -77,7 +80,6 @@ void Board::start(std::vector <Player*> player) {
     this->currentNumberOfPlayers++;
     int size = player.size();
     if (this->currentNumberOfPlayers == size) {
-        srand(time(NULL));
         this->run = true;
         this->player = player;
         this->numberOfPlayers = player.size();
@@ -92,21 +94,33 @@ void Board::start(std::vector <Player*> player) {
 }
 
 void Board::initPlayers(const int maxNumberOfPlayers) {
+    std::vector <PointWrapper> newPoints;
     if (maxNumberOfPlayers == 1) {
-        player[0]->init(WIDTH / 2.0, HEIGHT / 2.0, random() * 2 * PI);
+        Point point = player[0]->init(WIDTH / 2.0, HEIGHT / 2.0, random() * 2 * PI);
+        newPoints.emplace_back(PointWrapper(0, player[0]->getVisitedSize() - 1, point));
     } else if (maxNumberOfPlayers == 2) {
-        player[0]->init(WIDTH / 3.0, HEIGHT / 2.0, random() * 2 * PI);
-        player[1]->init(2 * WIDTH / 3.0, HEIGHT / 2.0, random() * 2 * PI);
+        Point point0 = player[0]->init(WIDTH / 3.0, HEIGHT / 2.0, random() * 2 * PI);
+        newPoints.emplace_back(PointWrapper(0, player[0]->getVisitedSize() - 1, point0));
+        Point point1 = player[1]->init(2 * WIDTH / 3.0, HEIGHT / 2.0, random() * 2 * PI);
+        newPoints.emplace_back(PointWrapper(1, player[1]->getVisitedSize() - 1, point1));
     } else if (maxNumberOfPlayers == 3) {
-        player[0]->init(WIDTH / 3.0, HEIGHT / 2.0, random() * 2 * PI);
-        player[1]->init(2 * WIDTH / 3.0, HEIGHT / 2.0, random() * 2 * PI);
-        player[2]->init(WIDTH / 2.0, 2 * HEIGHT / 3.0, random() * 2 * PI);
+        Point point0 = player[0]->init(WIDTH / 3.0, HEIGHT / 2.0, random() * 2 * PI);
+        newPoints.emplace_back(PointWrapper(0, player[0]->getVisitedSize() - 1, point0));
+        Point point1 = player[1]->init(2 * WIDTH / 3.0, HEIGHT / 2.0, random() * 2 * PI);
+        newPoints.emplace_back(PointWrapper(1, player[1]->getVisitedSize() - 1, point1));
+        Point point2 = player[2]->init(WIDTH / 2.0, 2 * HEIGHT / 3.0, random() * 2 * PI);
+        newPoints.emplace_back(PointWrapper(2, player[2]->getVisitedSize() - 1, point2));
     } else if (maxNumberOfPlayers == 4) {
-        player[0]->init(WIDTH / 3.0, HEIGHT / 3.0, random() * 2 * PI);
-        player[1]->init(2 * WIDTH / 3.0, HEIGHT / 3.0, random() * 2 * PI);
-        player[2]->init(WIDTH / 3.0, 2 * HEIGHT / 3.0, random() * 2 * PI);
-        player[3]->init(2 * WIDTH / 3.0, 2 * HEIGHT / 3.0, random() * 2 * PI);
+        Point point0 = player[0]->init(WIDTH / 3.0, HEIGHT / 3.0, random() * 2 * PI);
+        newPoints.emplace_back(PointWrapper(0, player[0]->getVisitedSize() - 1, point0));
+        Point point1 = player[1]->init(2 * WIDTH / 3.0, HEIGHT / 3.0, random() * 2 * PI);
+        newPoints.emplace_back(PointWrapper(1, player[1]->getVisitedSize() - 1, point1));
+        Point point2 = player[2]->init(WIDTH / 3.0, 2 * HEIGHT / 3.0, random() * 2 * PI);
+        newPoints.emplace_back(PointWrapper(2, player[2]->getVisitedSize() - 1, point2));
+        Point point3 = player[3]->init(2 * WIDTH / 3.0, 2 * HEIGHT / 3.0, random() * 2 * PI);
+        newPoints.emplace_back(PointWrapper(3, player[3]->getVisitedSize() - 1, point3));
     }
+    sendPoints(newPoints);
 }
 
 double Board::random() {

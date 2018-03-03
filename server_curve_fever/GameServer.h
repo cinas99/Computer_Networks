@@ -32,6 +32,7 @@ private:
     TcpServer tcpServer;
     UdpServer udpServer;
     vector <Player*> connectedPlayers; //parallel access
+    vector <Player*> gamePlayers;
     bool isGameStarted;
     mutex mPlayers;
     mutex mBoard;

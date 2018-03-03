@@ -51,7 +51,7 @@ public:
     //Player();
     //Player(double startX, double startY, double angle);
     Player(int tcpSocket, sockaddr_in clientSockAddr, SafeQueue <Message> *tcpQueue);
-    void init(double startX, double startY, double angle);
+    Point init(double startX, double startY, double angle);
     //Player(double startX, double startY, double angle, std::string color);
 
     sockaddr_in getSockAddr();

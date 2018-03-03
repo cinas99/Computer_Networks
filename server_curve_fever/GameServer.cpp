@@ -131,9 +131,12 @@ void GameServer::tcpSend(Player *player) {
                 break;
             case START: {
                 mPlayers.lock();
-                for (vector<Player *>::iterator it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
+                gamePlayers = getGamePlayers();
+                for (vector<Player*>::iterator it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
                     if ((*it)->isReady() && (*it)->isInRoom()) {
-                        tcpServer.sendInt((*it)->getTcpSocket(), START);
+                        int playerTcpSocket = (*it)->getTcpSocket();
+                        tcpServer.sendInt(playerTcpSocket, START);
+                        tcpServer.sendInt(playerTcpSocket, gamePlayers.size());
                     }
                 }
                 isGameStarted = true;
@@ -174,7 +177,22 @@ void GameServer::udpReceive(Player *player) {
 
     while (true) {
         string msg = udpServer.receive(player);
-        cout << "UDP Receive: (msg) " << msg << " (length) " << msg.length() << endl << endl;
+        if (msg.substr(0, 1) == "L") {
+            mPlayers.lock();
+            player->setTurn(-1);
+            mPlayers.unlock();
+        }
+        else if (msg.substr(0, 1) == "R") {
+            mPlayers.lock();
+            player->setTurn(1);
+            mPlayers.unlock();
+        }
+        else if (msg.substr(0, 1) == "S") {
+            mPlayers.lock();
+            player->setTurn(0);
+            mPlayers.unlock();
+        }
+        //cout << "UDP Receive: (msg) " << msg << " (length) " << msg.length() << endl << endl;
     }
 }
 

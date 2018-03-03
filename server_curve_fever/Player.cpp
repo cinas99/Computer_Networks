@@ -5,6 +5,7 @@
 #include <math.h>
 #include <vector>
 #include <string>
+#include <iostream>
 
 //Player::Player(){};
 
@@ -16,7 +17,7 @@ Player::Player(int tcpSocket, sockaddr_in clientSockAddr, SafeQueue <Message> *t
     this->tcpQueue = tcpQueue;
 }
 
-void Player::init(double startX, double startY, double angle) {
+Point Player::init(double startX, double startY, double angle) {
     this->currentX = startX;
     this->currentY = startY;
     this->angle = angle;
@@ -24,19 +25,20 @@ void Player::init(double startX, double startY, double angle) {
     this->nowPlaying = true;
     //this->color = color;
     //this->cur_point = setCurPoint(startX,startY);
-    Point point(currentX, currentY);
-    if (draw) {
-        visited.emplace_back(point);
-    }
+    Point point(currentX, currentY, !draw);
+    visited.emplace_back(point);
+    return point;
 }
 
 Point Player::generateNextLine() {
+    //std::cout << "turn: " << turn << std::endl;
     if (turn == -1) {
         angle -= CIRCULAR_SPEED;
     }
     else if (turn == 1) {
         angle += CIRCULAR_SPEED;
     }
+    //std::cout << "angle: " << angle << std::endl;
     currentX += LINEAR_SPEED * cos(angle);
     currentY += LINEAR_SPEED * sin(angle);
     Point point(currentX, currentY);
@@ -46,7 +48,8 @@ Point Player::generateNextLine() {
     //else {
         //point.setGap(true); //Point point(currentX, currentY, true);
     //}
-    visited.emplace_back(point);
+    if (nowPlaying)
+        visited.emplace_back(point);
     return point;
 }
 
