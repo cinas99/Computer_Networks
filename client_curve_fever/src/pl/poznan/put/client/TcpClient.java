@@ -126,6 +126,7 @@ public class TcpClient {
         controller.handleUnjoinRoom();
     }
     public void startReceive() throws IOException {
+        Board.initPlayers(receiveInt());
         sendInt(Message.UDP_CONNECT.ordinal());
         controller.startGame();
     }

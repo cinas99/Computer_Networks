@@ -1,5 +1,6 @@
 package pl.poznan.put.client;
 
+import pl.poznan.put.game.Board;
 import pl.poznan.put.game.Converter;
 
 import java.io.*;
@@ -24,6 +25,7 @@ public class UdpClient {
                     String msg = receive();
                     System.out.println("Udp receive: (message) " + msg + "\n");
                     Converter.convert(msg);
+                    Board.addPoint(Converter.getPlayerNumber(), Converter.getPointNumber(), Converter.getX(), Converter.getY(), Converter.isGap());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

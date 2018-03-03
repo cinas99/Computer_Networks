@@ -14,5 +14,8 @@ public enum Message {
     CONFIRM_UDP_MESSAGE,
     DISCONNECT,
     TRUE,
-    FALSE
+    FALSE,
+    LEFT,
+    RIGHT,
+    STRAIGHT
 }

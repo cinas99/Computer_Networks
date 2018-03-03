@@ -1,8 +1,9 @@
 package pl.poznan.put.game;
 
+import javafx.animation.KeyFrame;
+import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -17,10 +18,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
 import java.util.List;
-import java.util.Timer;
 
-import static java.lang.Math.*;
-
+import javafx.util.Duration;
 import pl.poznan.put.client.Message;
 import pl.poznan.put.client.TcpClient;
 import pl.poznan.put.client.UdpClient;
@@ -28,7 +27,8 @@ import pl.poznan.put.client.UdpClient;
 import java.io.IOException;
 
 public class Board {
-    //private static final double KEYFRAME_DURATION_TIME = 0.026; // seconds
+    private static final double KEYFRAME_DURATION_TIME = 0.026; // seconds
+    private static final double KEY_SEND_TIME = 0.03; //0.01; // seconds
     //private static final int NUMBER_OF_PLAYERS = 2;
     private static final int WIDTH = 900;
     private static final int HEIGHT = 700;
@@ -44,12 +44,15 @@ public class Board {
     private static final Color BOUNDS_COLOR = Color.BLACK;
     private static int currentNumberOfPlayers;// = NUMBER_OF_PLAYERS;
     //private final Timer timer = new Timer();
-    //private final Timeline timeline = new Timeline();
+    private final Timeline lineDrawer = new Timeline();
+    private final Timeline keySender = new Timeline();
     private Group root = new Group();
     private Scene scene = new Scene(root, WIDTH, HEIGHT);
     private Canvas canvas = new Canvas(WIDTH, HEIGHT);
     private GraphicsContext gc = canvas.getGraphicsContext2D();
-    private Player [] player;
+    private static int numberOfPlayers;
+    private static Player [] player;
+    private int myTurn = 0;
 
     private static final int WAIT_FOR_UDP_CONFIRM = 100; // milliseconds
     private static boolean connectionEstablished = false;
@@ -58,12 +61,16 @@ public class Board {
     private Stage primaryStage = new Stage();
     private Label label = new Label("Waiting for server...");
 
+    private static final String LEFT = "L";
+    private static final String RIGHT = "R";
+    private static final String STRAIGHT = "S";
+
     public Board(TcpClient tcpClient, UdpClient udpClient) throws IOException {
         this.tcpClient = tcpClient;
         this.udpClient = udpClient;
 
         root.getChildren().add(canvas);
-        root.getChildren().add(label);
+        //root.getChildren().add(label); TODO LATER
         primaryStage.setTitle(TITLE);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -82,6 +89,10 @@ public class Board {
         /*Parent root = FXMLLoader.load(getClass().getResource("board.fxml"));*/
     }
 
+    //public static void setNumberOfPlayers(int num) {
+        //numberOfPlayers = num;
+    //}
+
     public void start() {
         while(!connectionEstablished) {
             try {
@@ -94,6 +105,67 @@ public class Board {
             }
         }
         label.setText("Server confirmed! Let's start a game!");
+
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode().ordinal() == KeyCode.LEFT.ordinal()) {
+                    myTurn = -1;
+                }
+                else if (event.getCode().ordinal() == KeyCode.RIGHT.ordinal()) {
+                    myTurn = 1;
+                }
+                event.consume();
+            }
+        });
+
+        scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode().ordinal() == KeyCode.LEFT.ordinal()) {
+                    myTurn = 0;
+                }
+                else if (event.getCode().ordinal() == KeyCode.RIGHT.ordinal()) {
+                    myTurn = 0;
+                }
+                event.consume();
+            }
+        });
+
+        lineDrawer.getKeyFrames().add(new KeyFrame(Duration.seconds(KEYFRAME_DURATION_TIME), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                gc.clearRect(0, 0, WIDTH, HEIGHT);
+                for (int i=0; i < numberOfPlayers; i++) {
+                    drawLines(player[i]);
+                }
+            }
+        }));
+        lineDrawer.setCycleCount(Timeline.INDEFINITE);
+        lineDrawer.play();
+
+        keySender.getKeyFrames().add(new KeyFrame(Duration.seconds(KEY_SEND_TIME), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    if (myTurn == 0) {
+                        udpClient.send(STRAIGHT);
+                    }
+                    else if (myTurn == 1) {
+                        udpClient.send(RIGHT);
+                    }
+                    else if (myTurn == -1) {
+                        udpClient.send(LEFT);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }));
+        keySender.setCycleCount(Timeline.INDEFINITE);
+        keySender.play();
+
+        //initPlayers();
         /*try {
             udpClient.send("udp test message");
         } catch (IOException e) {
@@ -151,6 +223,10 @@ public class Board {
         connectionEstablished = isEstablished;
     }
 
+    public static void addPoint(int playerNumber, int pointNumber, double x, double y, boolean isGap) {
+        player[playerNumber].addPoint(new PointWrapper(pointNumber, new Point(x, y, isGap)));
+    }
+
     private void showResults() {
         int winnerIndex = -1;
         for (int i = 0; i < currentNumberOfPlayers; i++) {
@@ -162,7 +238,7 @@ public class Board {
         alert.setHeaderText(null);
         alert.setTitle(TITLE);
         alert.setContentText("Player " + (winnerIndex+1) + " won!");
-        //timeline.stop();
+        //lineDrawer.stop();
         alert.show();
     }
 
@@ -174,13 +250,14 @@ public class Board {
         gc.strokeLine(0, HEIGHT, WIDTH, HEIGHT);
         gc.strokeLine(WIDTH, HEIGHT, WIDTH, 0);
         gc.strokeLine(WIDTH, 0, 0, 0);
-        List<Point> visited = player.getVisited();
+        List<PointWrapper> visited = player.getVisited();
         if (visited.size() > 1) {
             gc.setStroke(player.getColor());
             gc.setLineWidth(LINE_WIDTH);
             for (int i = 0; i < visited.size() - 1; i++) {
-                if (!visited.get(i).isGap()) {
-                    gc.strokeLine(visited.get(i).getX(), visited.get(i).getY(), visited.get(i + 1).getX(), visited.get(i + 1).getY());
+                if (!visited.get(i).getPoint().isGap()) {
+                    gc.strokeLine(visited.get(i).getPoint().getX(), visited.get(i).getPoint().getY(),
+                            visited.get(i + 1).getPoint().getX(), visited.get(i + 1).getPoint().getY());
                 }
             }
         }
@@ -191,25 +268,26 @@ public class Board {
         }
     }
 
-    private void initPlayers(final int maxNumberOfPlayers) {
-        player = new Player[maxNumberOfPlayers];
-        if (maxNumberOfPlayers == 1) {
-            player[0] = new Player(WIDTH/2.0, HEIGHT/2.0, random()*2*PI, Color.RED);
+    public static void initPlayers(final int num) {//final int maxNumberOfPlayers) {
+        numberOfPlayers = num;
+        player = new Player[numberOfPlayers];//maxNumberOfPlayers];
+        if (numberOfPlayers == 1) {
+            player[0] = new Player(Color.RED);//(WIDTH/2.0, HEIGHT/2.0, random()*2*PI, Color.RED);
         }
-        else if (maxNumberOfPlayers == 2) {
-            player[0] = new Player(WIDTH/3.0, HEIGHT/2.0, random()*2*PI, Color.RED);
-            player[1] = new Player(2*WIDTH/3.0, HEIGHT/2.0, random()*2*PI, Color.BLUE);
+        else if (numberOfPlayers == 2) {
+            player[0] = new Player(Color.RED);//(WIDTH/3.0, HEIGHT/2.0, random()*2*PI, Color.RED);
+            player[1] = new Player(Color.BLUE);//(2*WIDTH/3.0, HEIGHT/2.0, random()*2*PI, Color.BLUE);
         }
-        else if (maxNumberOfPlayers == 3) {
-            player[0] = new Player(WIDTH/3.0, HEIGHT/2.0, random()*2*PI, Color.RED);
-            player[1] = new Player(2*WIDTH/3.0, HEIGHT/2.0, random()*2*PI, Color.BLUE);
-            player[2] = new Player(WIDTH/2.0, 2*HEIGHT/3.0, random()*2*PI, Color.GREEN);
+        else if (numberOfPlayers == 3) {
+            player[0] = new Player(Color.RED);//(WIDTH/3.0, HEIGHT/2.0, random()*2*PI, Color.RED);
+            player[1] = new Player(Color.BLUE);//(2*WIDTH/3.0, HEIGHT/2.0, random()*2*PI, Color.BLUE);
+            player[2] = new Player(Color.GREEN);//(WIDTH/2.0, 2*HEIGHT/3.0, random()*2*PI, Color.GREEN);
         }
-        else if (maxNumberOfPlayers == 4) {
-            player[0] = new Player(WIDTH/3.0, HEIGHT/3.0, random()*2*PI, Color.RED);
-            player[1] = new Player(2*WIDTH/3.0, HEIGHT/3.0, random()*2*PI, Color.BLUE);
-            player[2] = new Player(WIDTH/3.0, 2*HEIGHT/3.0, random()*2*PI, Color.GREEN);
-            player[3] = new Player(2*WIDTH/3.0, 2*HEIGHT/3.0, random()*2*PI, Color.DARKTURQUOISE);
+        else if (numberOfPlayers == 4) {
+            player[0] = new Player(Color.RED);//(WIDTH/3.0, HEIGHT/3.0, random()*2*PI, Color.RED);
+            player[1] = new Player(Color.BLUE);//(2*WIDTH/3.0, HEIGHT/3.0, random()*2*PI, Color.BLUE);
+            player[2] = new Player(Color.GREEN);//(WIDTH/3.0, 2*HEIGHT/3.0, random()*2*PI, Color.GREEN);
+            player[3] = new Player(Color.DARKTURQUOISE);//(2*WIDTH/3.0, 2*HEIGHT/3.0, random()*2*PI, Color.DARKTURQUOISE);
         }
     }
 

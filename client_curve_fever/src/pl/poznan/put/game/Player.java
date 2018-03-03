@@ -8,27 +8,33 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 public class Player {
-    private final static double LINEAR_SPEED = 2.8;
-    private final static double CIRCULAR_SPEED = 0.12;
-    private final List <Point> visited = new ArrayList<Point>();
+    //private final static double LINEAR_SPEED = 2.8;
+    //private final static double CIRCULAR_SPEED = 0.12;
+    private final List <PointWrapper> visited = new ArrayList<PointWrapper>();
     private final Color color;
     private double currentX;
     private double currentY;
-    private double angle;
+    //private double angle;
     private int turn;
-    private boolean draw;
+    //private boolean draw;
     private boolean nowPlaying;
 
-    public Player(double startX, double startY, double angle, Color color) {
-        this.currentX = startX;
-        this.currentY = startY;
-        this.angle = angle;
-        this.draw = false;
+    public Player(Color color) {//double startX, double startY, double angle, Color color) {
+        //this.currentX = startX;
+        //this.currentY = startY;
+        //this.angle = angle;
+        //this.draw = false;
         this.color = color;
         this.nowPlaying = true;
-        if (draw) {
-            visited.add(new Point(currentX, currentY));
-        }
+        //if (draw) {
+            //visited.add(new Point(currentX, currentY));
+        //}
+    }
+
+    public void addPoint(PointWrapper pointWrapper) {
+        currentX = pointWrapper.getPoint().getX();
+        currentY = pointWrapper.getPoint().getY();
+        visited.add(pointWrapper);
     }
 
     /*public void generateNextLine() {
@@ -65,11 +71,11 @@ public class Player {
         this.turn = turn;
     }
 
-    public void setDraw(boolean draw) {
-        this.draw = draw;
-    }
+    //public void setDraw(boolean draw) {
+        //this.draw = draw;
+    //}
 
-    public List<Point> getVisited() {
+    public List<PointWrapper> getVisited() {
         return visited;
     }
 
