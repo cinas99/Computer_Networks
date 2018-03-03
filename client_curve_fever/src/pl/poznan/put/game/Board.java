@@ -51,7 +51,7 @@ public class Board {
     private GraphicsContext gc = canvas.getGraphicsContext2D();
     private Player [] player;
 
-    private static final int WAIT_FOR_UDP_CONFIRM = 200; // milliseconds
+    private static final int WAIT_FOR_UDP_CONFIRM = 100; // milliseconds
     private static boolean connectionEstablished = false;
     private TcpClient tcpClient;
     private UdpClient udpClient;

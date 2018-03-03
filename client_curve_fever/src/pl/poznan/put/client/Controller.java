@@ -73,6 +73,7 @@ public class Controller {
             }
             else {
                 tcpClient.joinSend(nick.getText());
+                nick.setDisable(true);
             }
         }
         catch (IOException e) {
@@ -111,7 +112,7 @@ public class Controller {
             public void run() {
                 join.setText("Opuść pokój");
                 start.setDisable(false);
-                nick.setDisable(true);
+                //nick.setDisable(true);
                 inside = true;
             }
         });

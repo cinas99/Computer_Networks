@@ -1,5 +1,7 @@
 package pl.poznan.put.client;
 
+import pl.poznan.put.game.Converter;
+
 import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
@@ -21,6 +23,7 @@ public class UdpClient {
                 try {
                     String msg = receive();
                     System.out.println("Udp receive: (message) " + msg + "\n");
+                    Converter.convert(msg);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
