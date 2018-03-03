@@ -151,7 +151,7 @@ void GameServer::tcpSend(Player *player) {
 }
 
 void GameServer::udpReceive(Player *player) {
-    const int tcpSocket = player->getTcpSocket();
+    //const int tcpSocket = player->getTcpSocket();
     SafeQueue<Message> *tcpQueue = player->getTcpQueue();
     SafeQueue <string> udpQueue;
     player->setUdpQueue(&udpQueue);
@@ -163,7 +163,7 @@ void GameServer::udpReceive(Player *player) {
     do {
         num = udpServer.receiveInt(player);
     } while (num != FIRST_UDP_MESSAGE);
-    cout << "UDP Receive: Udp connection is established! (tcpSocket) " << tcpSocket << endl << endl;
+    cout << "UDP Receive: Udp connection is established! (nick) " << player->getNick() << endl << endl;
     tcpQueue->push(CONFIRM_UDP_MESSAGE);
     mPlayers.unlock();
 
@@ -184,7 +184,7 @@ void GameServer::udpSend(Player *player) {
     while (true) {
         string msg = udpQueue->get();
         udpServer.send(player, msg);
-        cout << "UDP Send: (tcpSocket) " << player->getTcpSocket() << " (msg) " << msg << endl << endl;
+        //cout << "UDP Send: (nick) " << player->getNick() << " (msg) " << msg << endl << endl;
     }
 }
 

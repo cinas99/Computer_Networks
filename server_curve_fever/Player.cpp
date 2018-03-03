@@ -30,7 +30,7 @@ void Player::init(double startX, double startY, double angle) {
     }
 }
 
-void Player::generateNextLine() {
+Point Player::generateNextLine() {
     if (turn == -1) {
         angle -= CIRCULAR_SPEED;
     }
@@ -39,9 +39,23 @@ void Player::generateNextLine() {
     }
     currentX += LINEAR_SPEED * cos(angle);
     currentY += LINEAR_SPEED * sin(angle);
-    if (draw && nowPlaying) {
-        visited.emplace_back(Point(currentX, currentY));
-    }
+    Point point(currentX, currentY);
+    if (!draw) //{ //} && nowPlaying) {
+        point.setGap(true);
+    //}
+    //else {
+        //point.setGap(true); //Point point(currentX, currentY, true);
+    //}
+    visited.emplace_back(point);
+    return point;
+}
+
+Point Player::getPoint(int index) {
+    return visited[index];
+}
+
+int Player::getVisitedSize() {
+    return visited.size();
 }
 
 /*Player::Player(double startX, double startY, double angle, string color):color(std::move(color)) {

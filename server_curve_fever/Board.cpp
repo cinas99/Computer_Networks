@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Board.h"
+#include "PointWrapper.h"
 #include <math.h>
 #include <iostream>
 #include <chrono>
@@ -23,10 +24,12 @@ void Board::threadDrawing() {
     std::this_thread::sleep_for(std::chrono::milliseconds(START_DRAWING_DELAY));
     while (run) {
         startDrawing();
+        std::cout << "StartDrawing!" << std::endl;
         const int stopTime = round(MIN_TIME_OF_DRAWING + random() * (MAX_TIME_OF_DRAWING - MIN_TIME_OF_DRAWING));
         std::this_thread::sleep_for(std::chrono::milliseconds(stopTime));
         if (run) {
             stopDrawing();
+            std::cout << "StopDrawing!" << std::endl;
             const int startTime = round(MIN_TIME_OF_DELAY + random() * (MAX_TIME_OF_DELAY - MIN_TIME_OF_DELAY));
             std::this_thread::sleep_for(std::chrono::milliseconds(startTime));
         }
@@ -38,13 +41,36 @@ void Board::threadDrawing() {
 
 void Board::threadGenerateLines() {
     while (run) {
+        std::vector <PointWrapper> newPoints;
         for (int i=0; i<currentNumberOfPlayers; i++) {
-            player[i]->generateNextLine();
+            if (player[i]->isNowPlaying()) {
+                Point point = player[i]->generateNextLine();
+                newPoints.emplace_back(PointWrapper(i, player[i]->getVisitedSize() - 1, point));
+            }
         }
+        sendPoints(newPoints);
         checkCollision();
         std::this_thread::sleep_for(std::chrono::milliseconds(KEYFRAME_DURATION_TIME));
     }
     std::cout << "Board: generating lines is finished!" << std::endl;
+}
+
+void Board::sendPoints(std::vector <PointWrapper> newPoints) {
+    for (std::vector<Player *>::iterator it = player.begin(); it != player.end(); ++it) {
+        for (std::vector<PointWrapper>::iterator point = newPoints.begin(); point != newPoints.end(); ++point) {
+            string msg = prepareMessage(point->getPlayerNumber(), point->getPointNumber(), point->getPoint());
+            (*it)->getUdpQueue()->push(msg);
+        }
+    }
+}
+
+std::string Board::prepareMessage(int playerNumber, int pointNumber, Point point) {
+    std::string strPlayerNumber = std::to_string(playerNumber);
+    std::string strPointNumber = std::to_string(pointNumber);
+    std::string strX = std::to_string(point.getX());
+    std::string strY = std::to_string(point.getY());
+    std::string strIsGap = point.isGap() ? "1" : "0";
+    return strPlayerNumber + "," + strPointNumber + "," + strX + "," + strY + "," + strIsGap + ",";
 }
 
 void Board::start(std::vector <Player*> player) {

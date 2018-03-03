@@ -61,7 +61,9 @@ public:
     SafeQueue <string> *getUdpQueue();
     void setUdpQueue(SafeQueue <string> *udpQueue);
 
-    void generateNextLine();
+    Point generateNextLine();
+    Point getPoint(int index);
+    int getVisitedSize();
 
     void markGap();
 

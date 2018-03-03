@@ -1,5 +1,5 @@
-#ifndef SERVER_CURVE_FEVER_POIN_H
-#define SERVER_CURVE_FEVER_POIN_H
+#ifndef SERVER_CURVE_FEVER_POINT_H
+#define SERVER_CURVE_FEVER_POINT_H
 
 class Point {
 private:
@@ -9,6 +9,7 @@ private:
 public:
     Point(double x, double y);
     Point(double x, double y, bool gap);
+    void setGap(bool gap);
     bool isGap();
     double getX();
     double getY();
@@ -16,4 +17,4 @@ public:
 
 
 
-#endif //SERVER_CURVE_FEVER_POIN_H
+#endif //SERVER_CURVE_FEVER_POINT_H
