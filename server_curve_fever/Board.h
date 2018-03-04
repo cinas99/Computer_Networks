@@ -31,23 +31,21 @@ private:
     int currentNumberOfPlayers;
     std::vector <Player*> player;
     bool run;
-
-    //bool STILL_TIMING = FALSE;
-    //bool STILL_PLAYING = FALSE;
+    std::string winner;
 public:
     static Board& getInstance() {
         static Board instance;
         return instance;
     }
-    //void setServers(TcpServer tcpServer, UdpServer udpServer);
-    void start(std::vector <Player*> player);//, TcpServer tcpServer, UdpServer udpServer);
+    void start(std::vector <Player*> player);
     void initPlayers(int maxNumberOfPlayers);
     void threadDrawing();
     void threadGenerateLines();
     void sendPoints(std::vector <PointWrapper> newPoints);
     static std::string prepareMessage(int playerNumber, int pointNumber, Point point);
+    std::string getWinner();
 
-    void showResults();
+    void sendResults();
     static double random();
     void startDrawing();
     void stopDrawing();
@@ -55,17 +53,7 @@ public:
     //static int getNumberOfPlayers();
     static bool outOfBounds(Point p);
     static bool areIntersecting(Point p1, Point p2, Point q1, Point q2);
-    //void startDrawing();
-    //void stopDrawing();
     void checkCollision();
-    void TimerTask(int interval, bool executor);
-
-    //bool checkStillTiming();
-    //bool checkStillPlaying();
-    //void setStillTiming(bool cond);
-    //void setStillPlaying(bool cond);
-    //void showResults(); // TODO LATER
-    Board(int maxNumberOfPlayers);
 };
 
 #endif //SERVER_CURVE_FEVER_BOARD_H

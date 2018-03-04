@@ -202,7 +202,7 @@ void Board::checkCollision() {
                     if (!p1.isGap() && areIntersecting(p1, p2, nextToLast, last)) {
                         player[i]->setNowPlaying(false);
                         if (--currentNumberOfPlayers <= 1) {
-                            showResults();
+                            sendResults();
                             return;
                         }
                     }
@@ -216,26 +216,29 @@ void Board::checkCollision() {
 //ShowResults - przemyslec i gdzies dokomponowac
 // ? w Serwerze //TODO LATER //
 
-void Board::showResults() {
-    int winnerIndex;
+std::string Board::getWinner() {
+    return winner;
+}
+
+void Board::sendResults() {
     if (numberOfPlayers == 1) {
-        winnerIndex = 0;
+        winner = player[0]->getNick();
     }
     else {
-        //winnerIndex = -1;
         for (int i=0; i<numberOfPlayers; i++) {
             if (player[i]->isNowPlaying())
-                winnerIndex = i;
+                winner = player[i]->getNick();
         }
     }
     this->run = false;
-    std::cout << "Winner is player " << winnerIndex << std::endl;
-    // stop timeline
-    // send info about winner
+    for (int i=0; i<numberOfPlayers; i++) {
+        SafeQueue <Message> *tcpQueue = player[i]->getTcpQueue();
+        tcpQueue->push(RESULTS);
+    }
 }
 
 /*
-void Board::showResults() {
+void Board::sendResults() {
     int winnerIndex = -1;
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
         if (player[i].isNowPlaying()) {

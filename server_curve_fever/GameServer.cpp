@@ -89,7 +89,7 @@ void GameServer::tcpSend(Player *player) {
     bool isThreadAlive = true;
     while (isThreadAlive) {
         Message message = tcpQueue->get();
-        //cout << "TCP Send: (tcpSocket) " << tcpSocket << " (message) " << message << endl;
+        cout << "TCP Send: (tcpSocket) " << tcpSocket << " (message) " << message << endl;
         switch (message) {
             case TURN_ON:
                 tcpServer.sendInt(tcpSocket, TURN_ON);
@@ -151,6 +151,13 @@ void GameServer::tcpSend(Player *player) {
             case CONFIRM_UDP_MESSAGE:
                 tcpServer.sendInt(tcpSocket, CONFIRM_UDP_MESSAGE);
                 cout << "TCP Send: Udp message is confirmed (tcpSocket) " << tcpSocket << endl << endl;
+                break;
+            case RESULTS:
+                cout << "RESULTS" << endl;
+                tcpServer.sendInt(tcpSocket, RESULTS);
+                tcpServer.sendString(tcpSocket, Board::getInstance().getWinner());
+                cout << "TCP Send: Winner nick is send! (tcpSocket) " << tcpSocket << " (nick) " <<
+                     Board::getInstance().getWinner() << endl << endl;
                 break;
         }
         isThreadAlive = player->isThreadAlive();

@@ -19,6 +19,7 @@ enum Message{
     FIRST_UDP_MESSAGE,
     CONFIRM_UDP_MESSAGE,
     DISCONNECT,
+    RESULTS,
     TRUE,
     FALSE
 };
