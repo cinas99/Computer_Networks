@@ -1,6 +1,7 @@
 package pl.poznan.put.game;
 
 import javafx.animation.KeyFrame;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -29,21 +30,13 @@ import java.io.IOException;
 public class Board {
     private static final double KEYFRAME_DURATION_TIME = 0.026; // seconds
     private static final double KEY_SEND_TIME = 0.03; //0.01; // seconds
-    //private static final int NUMBER_OF_PLAYERS = 2;
     private static final int WIDTH = 900;
     private static final int HEIGHT = 700;
-    //private static final long START_DRAWING_DELAY = 1500; // milliseconds
-    //private static final long MIN_TIME_OF_DRAWING = 4000; // milliseconds
-    //private static final long MAX_TIME_OF_DRAWING = 6000; // milliseconds
-    //private static final long MIN_TIME_OF_DELAY = 200; // milliseconds
-    //private static final long MAX_TIME_OF_DELAY = 400; // milliseconds
     private static final double END_CIRCLE_RADIUS = 1.0;
     private static final double LINE_WIDTH = 2.0;
     private static final double BOUNDS_WIDTH = 4.0;
     private static final String TITLE = "Curve fever!";
     private static final Color BOUNDS_COLOR = Color.BLACK;
-    private static int currentNumberOfPlayers;// = NUMBER_OF_PLAYERS;
-    //private final Timer timer = new Timer();
     private final Timeline lineDrawer = new Timeline();
     private final Timeline keySender = new Timeline();
     private Group root = new Group();
@@ -85,13 +78,7 @@ public class Board {
                 e.printStackTrace();
             }
         });
-
-        /*Parent root = FXMLLoader.load(getClass().getResource("board.fxml"));*/
     }
-
-    //public static void setNumberOfPlayers(int num) {
-        //numberOfPlayers = num;
-    //}
 
     public void start() {
         while(!connectionEstablished) {
@@ -164,59 +151,6 @@ public class Board {
         }));
         keySender.setCycleCount(Timeline.INDEFINITE);
         keySender.play();
-
-        //initPlayers();
-        /*try {
-            udpClient.send("udp test message");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-        /*root.getChildren().add(canvas);
-        // current number of players have to be send
-        initPlayers(currentNumberOfPlayers);
-        for (int i=0; i < currentNumberOfPlayers; i++) {
-            this.drawLines(player[i]);
-        }
-        // when msg is received
-        gc.clearRect(0, 0, WIDTH, HEIGHT);
-        for (int i=0; i < currentNumberOfPlayers; i++) {
-            drawLines(player[i]);
-        }
-
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode().ordinal() == KeyCode.LEFT.ordinal()) {
-                    // send msg
-                    //player[0].setTurn(-1);
-                }
-                else if (event.getCode().ordinal() == KeyCode.RIGHT.ordinal()) {
-                    // send msg
-                    //player[0].setTurn(1);
-                }
-                event.consume();
-            }
-        });
-
-        scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if(event.getCode().ordinal() == KeyCode.LEFT.ordinal()) {
-                    // send msg
-                    //player[0].setTurn(0);
-                }
-                else if (event.getCode().ordinal() == KeyCode.RIGHT.ordinal()) {
-                    // send msg
-                    //player[0].setTurn(0);
-                }
-                event.consume();
-            }
-        });
-
-        primaryStage.setTitle(TITLE);
-        primaryStage.setScene(scene);
-        primaryStage.show();*/
     }
 
     public static void setConnectionEstablished(boolean isEstablished) {
@@ -227,19 +161,19 @@ public class Board {
         player[playerNumber].addPoint(new PointWrapper(pointNumber, new Point(x, y, isGap)));
     }
 
-    private void showResults() {
-        int winnerIndex = -1;
-        for (int i = 0; i < currentNumberOfPlayers; i++) {
-            if (player[i].isNowPlaying()) {
-                winnerIndex = i;
+    public static void showResults(String winner) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText(null);
+                alert.setTitle(TITLE);
+                alert.setContentText("Player " + winner + " won!");
+                alert.show();
             }
-        }
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(null);
-        alert.setTitle(TITLE);
-        alert.setContentText("Player " + (winnerIndex+1) + " won!");
-        //lineDrawer.stop();
-        alert.show();
+        });
+        //lineDrawer.stop(); HAVE TO BE PUT SOMEWHERE ELSE
+        //keySender.stop();
     }
 
     private void drawLines(Player player) {
@@ -268,26 +202,26 @@ public class Board {
         }
     }
 
-    public static void initPlayers(final int num) {//final int maxNumberOfPlayers) {
-        numberOfPlayers = num;
-        player = new Player[numberOfPlayers];//maxNumberOfPlayers];
+    public static void initPlayers(final int maxNumberOfPlayers) {
+        numberOfPlayers = maxNumberOfPlayers;
+        player = new Player[numberOfPlayers];
         if (numberOfPlayers == 1) {
-            player[0] = new Player(Color.RED);//(WIDTH/2.0, HEIGHT/2.0, random()*2*PI, Color.RED);
+            player[0] = new Player(Color.RED);
         }
         else if (numberOfPlayers == 2) {
-            player[0] = new Player(Color.RED);//(WIDTH/3.0, HEIGHT/2.0, random()*2*PI, Color.RED);
-            player[1] = new Player(Color.BLUE);//(2*WIDTH/3.0, HEIGHT/2.0, random()*2*PI, Color.BLUE);
+            player[0] = new Player(Color.RED);
+            player[1] = new Player(Color.BLUE);
         }
         else if (numberOfPlayers == 3) {
-            player[0] = new Player(Color.RED);//(WIDTH/3.0, HEIGHT/2.0, random()*2*PI, Color.RED);
-            player[1] = new Player(Color.BLUE);//(2*WIDTH/3.0, HEIGHT/2.0, random()*2*PI, Color.BLUE);
-            player[2] = new Player(Color.GREEN);//(WIDTH/2.0, 2*HEIGHT/3.0, random()*2*PI, Color.GREEN);
+            player[0] = new Player(Color.RED);
+            player[1] = new Player(Color.BLUE);
+            player[2] = new Player(Color.GREEN);
         }
         else if (numberOfPlayers == 4) {
-            player[0] = new Player(Color.RED);//(WIDTH/3.0, HEIGHT/3.0, random()*2*PI, Color.RED);
-            player[1] = new Player(Color.BLUE);//(2*WIDTH/3.0, HEIGHT/3.0, random()*2*PI, Color.BLUE);
-            player[2] = new Player(Color.GREEN);//(WIDTH/3.0, 2*HEIGHT/3.0, random()*2*PI, Color.GREEN);
-            player[3] = new Player(Color.DARKTURQUOISE);//(2*WIDTH/3.0, 2*HEIGHT/3.0, random()*2*PI, Color.DARKTURQUOISE);
+            player[0] = new Player(Color.RED);
+            player[1] = new Player(Color.BLUE);
+            player[2] = new Player(Color.GREEN);
+            player[3] = new Player(Color.DARKTURQUOISE);
         }
     }
 

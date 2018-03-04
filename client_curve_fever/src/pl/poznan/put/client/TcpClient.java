@@ -48,7 +48,11 @@ public class TcpClient {
                             break;
                         case CONFIRM_UDP_MESSAGE:
                             System.out.println("Tcp receive: Udp connection is established! Let's start a game...\n");
-                            TcpClient.this.confirmUdpMessage();
+                            TcpClient.this.confirmUdpMessageReceive();
+                            break;
+                        case RESULTS:
+                            System.out.println("Tcp receive: We know the result of a game!\n");
+                            TcpClient.this.resultsReceive();
                             break;
                     }
                 }
@@ -131,8 +135,13 @@ public class TcpClient {
         controller.startGame();
     }
 
-    public void confirmUdpMessage() {
+    public void confirmUdpMessageReceive() {
         Board.setConnectionEstablished(true);
+    }
+
+    public void resultsReceive() throws IOException {
+        String winner = receive();
+        Board.showResults(winner);
     }
 
     public void send(String msg) throws IOException {

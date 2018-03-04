@@ -150,14 +150,4 @@ public class Controller {
             textField.setText("");
         }
     }
-
-    /*@FXML protected void handleButton() {
-        nick.setDisable(false);
-        String msg = nick.getText();
-        try {
-            udpClient.send(msg);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
 }
