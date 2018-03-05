@@ -1,9 +1,10 @@
 package pl.poznan.put.game;
 
 public class Point {
-    private boolean gap;
+    private int number;
     private double x;
     private double y;
+    private boolean gap;
 
     public Point(double x, double y) {
         this.x = x;

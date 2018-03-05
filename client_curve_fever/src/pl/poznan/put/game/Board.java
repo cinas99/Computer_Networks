@@ -28,7 +28,7 @@ import pl.poznan.put.client.UdpClient;
 import java.io.IOException;
 
 public class Board {
-    private static final double KEYFRAME_DURATION_TIME = 0.026; // seconds
+    private static final double KEYFRAME_DURATION_TIME = 0.015; // seconds
     private static final double KEY_SEND_TIME = 0.03; //0.01; // seconds
     private static final int WIDTH = 900;
     private static final int HEIGHT = 700;
@@ -83,7 +83,7 @@ public class Board {
     public void start() {
         while(!connectionEstablished) {
             try {
-                udpClient.sendInt(Message.FIRST_UDP_MESSAGE.ordinal());
+                udpClient.send("F");
                 Thread.sleep(WAIT_FOR_UDP_CONFIRM);
             } catch (IOException e) {
                 e.printStackTrace();
