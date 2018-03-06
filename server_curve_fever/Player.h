@@ -19,30 +19,44 @@
 #include "Message.h"
 #include <vector>
 #include <string>
-using namespace std;
+#include <thread>
+#include <mutex>
+//using namespace std;
 
 class Player {
 private:
-    const double LINEAR_SPEED = 2.8;
-    const double CIRCULAR_SPEED = 0.12;
+    const double LINEAR_SPEED = 1.6;
+    const double CIRCULAR_SPEED = 0.07;
 
-    int tcpSocket;
-    sockaddr_in clientSockAddr;
-    SafeQueue <Message> *tcpQueue;
-    SafeQueue <string> *udpQueue;
+    int tcpSocket; // parallel access
+    sockaddr_in clientSockAddr; // parallel access
+    SafeQueue <Message> *tcpQueue; // parallel access
+    SafeQueue <std::string> *udpSendQueue; // parallel access
+    SafeQueue <std::string> *udpReceiveQueue; // parallel access
 
-    std::string nick;
-    vector<Point> visited;
-    bool inRoom;
-    bool ready;
-    bool draw;
-    bool nowPlaying;
-    bool threadAlive;
+    std::mutex mClientSockAddr;
+    std::mutex mUdpSet;
+    std::mutex mInRoom;
+    std::mutex mReady;
+    std::mutex mDraw;
+    std::mutex mNowPlaying;
+    std::mutex mThreadAlive;
+    std::mutex mTurn;
 
-    double currentX;
-    double currentY;
-    double angle;
-    int turn;
+    std::string nick; // parallel access
+    std::vector<Point> visited; // parallel access
+    bool udpSet; // parallel access
+    bool inRoom; // parallel access
+    bool ready; // parallel access
+    bool draw; // parallel access
+    bool nowPlaying; // parallel access
+    bool threadAlive; // parallel access
+
+    double currentX; // parallel access
+    double currentY; // parallel access
+    double angle; // parallel access
+    int turn; // parallel access
+    //mutex m;
 
 public:
     Player(int tcpSocket, sockaddr_in clientSockAddr, SafeQueue <Message> *tcpQueue);
@@ -51,17 +65,20 @@ public:
     sockaddr_in getSockAddr();
     void setSockAddr(sockaddr_in clientSockAddr);
     SafeQueue <Message> *getTcpQueue();
-    SafeQueue <string> *getUdpQueue();
-    void setUdpQueue(SafeQueue <string> *udpQueue);
+    SafeQueue <std::string> *getUdpSendQueue();
+    void setUdpSendQueue(SafeQueue<std::string> *udpQueue);
+    SafeQueue <std::string> *getUdpReceiveQueue();
+    void setUdpReceiveQueue(SafeQueue<std::string> *udpQueue);
 
     Point generateNextLine();
-    vector<Point> getVisited();
+    std::vector<Point> getVisited();
     int getVisitedSize();
     void markGap();
 
-    Point getPoint(int index);
     void setTurn(int turn);
     void setDraw(bool draw);
+    void setUdpSet(bool set);
+    bool isUdpSet();
     bool isThreadAlive();
     void setThreadAlive(bool threadAlive);
     bool isNowPlaying();

@@ -4,6 +4,8 @@ GameServer::GameServer() {
     isGameStarted = false;
 }
 
+using namespace std;
+
 /*
  * TODO:
  * Check if nick is unique
@@ -12,16 +14,19 @@ GameServer::GameServer() {
 void GameServer::tcpReceive(int tcpSocket, sockaddr_in clientSockAddr) {
     SafeQueue <Message> tcpQueue;
     Player player(tcpSocket, clientSockAddr, &tcpQueue);
+    SafeQueue <string> udpReceiveQueue;
+    player.setUdpReceiveQueue(&udpReceiveQueue);
+    cout << player.getNick() << " " << player.getSockAddr().sin_addr.s_addr << endl;
     bool isThreadAlive = true;
     while (isThreadAlive) {
         int msg = tcpServer.receiveInt(tcpSocket);
         //cout << "TCP Receive: (tcpSocket) " << tcpSocket << " (msg) " << msg << endl;
         switch (msg) {
             case TURN_ON: {
-                mPlayers.lock();
+                mConnected.lock();
                 connectedPlayers.push_back(&player);
+                mConnected.unlock();
                 cout << "TCP Receive: Turn on (tcpSocket) " << tcpSocket << endl << endl;
-                mPlayers.unlock();
                 thread tcpSender(&GameServer::tcpSend, this, &player);//, &tcpQueue);
                 tcpSender.detach();
                 tcpQueue.push(TURN_ON);
@@ -29,52 +34,54 @@ void GameServer::tcpReceive(int tcpSocket, sockaddr_in clientSockAddr) {
             }
             case JOIN: {
                 string nick = tcpServer.receive(tcpSocket);
-                mPlayers.lock();
                 player.setNick(nick);
                 cout << "TCP Receive: Join (tcpSocket) " << tcpSocket << " (nick) " << nick << endl << endl;
-                mPlayers.unlock();
                 tcpQueue.push(JOIN);
                 break;
             }
             case LEAVE:
-                mPlayers.lock();
+                //mPlayer.lock();
                 player.setInRoom(false);
                 player.setReady(false);
                 cout << "TCP Receive: Leave (tcpSocket) " << tcpSocket << " (nick) " << player.getNick() << endl
                      << endl;
-                mPlayers.unlock();
+                //mPlayer.unlock();
                 tcpQueue.push(ROOM_EVENT);
                 break;
             case DISCONNECT:
-                mPlayers.lock();
-                deletePlayer(player);
+                mConnected.lock();
+                deletePlayer(&player);
+                mConnected.unlock();
                 cout << "TCP Receive: Disconnect, receiving thread is saying bye-bye! (tcpSocket) " << tcpSocket << endl
                      << endl;
                 tcpQueue.push(DISCONNECT);
                 tcpQueue.push(ROOM_EVENT);
+                //mPlayer.lock();
                 player.setThreadAlive(false);
-                mPlayers.unlock();
+                //mPlayer.unlock();
                 break;
-            case READY:
-                mPlayers.lock();
+            case READY: {
+                //mPlayer.lock();
                 player.setReady(true);
+                //mPlayer.unlock();
                 tcpQueue.push(ROOM_EVENT);
-                if (isEveryoneReady())
+                mConnected.lock();
+                bool isEverybodyReady = isEveryoneReady();
+                mConnected.unlock();
+                if (isEverybodyReady)
                     tcpQueue.push(START);
                 cout << "TCP Receive: Ready (tcpSocket) " << tcpSocket << endl << endl;
-                mPlayers.unlock();
                 break;
+            }
             case UNREADY:
-                mPlayers.lock();
+                //mPlayer.lock();
                 player.setReady(false);
                 cout << "TCP Receive: Unready (tcpSocket) " << tcpSocket << endl << endl;
-                mPlayers.unlock();
+                //mPlayer.unlock();
                 tcpQueue.push(ROOM_EVENT);
                 break;
             case UDP_CONNECT:
-                mPlayers.lock();
-                thread udpReceiver(&GameServer::udpReceive, this, &player);
-                mPlayers.unlock();
+                thread udpReceiver(&GameServer::udpAction, this, &player);
                 udpReceiver.detach();
                 cout << "TCP Receive: Udp connect (tcpSocket) " << tcpSocket << endl << endl;
                 break;
@@ -84,8 +91,10 @@ void GameServer::tcpReceive(int tcpSocket, sockaddr_in clientSockAddr) {
 }
 
 void GameServer::tcpSend(Player *player) {
+    //mPlayer.lock();
     const int tcpSocket = player->getTcpSocket();
     SafeQueue<Message> *tcpQueue = player->getTcpQueue();
+    //mPlayer.unlock();
     bool isThreadAlive = true;
     while (isThreadAlive) {
         Message message = tcpQueue->get();
@@ -97,11 +106,15 @@ void GameServer::tcpSend(Player *player) {
                 cout << "TCP Send: Turn on (tcpSocket) " << tcpSocket << endl << endl;
                 break;
             case JOIN: {
-                mPlayers.lock();
+                mConnected.lock();
                 bool checkFreeSeat = isFreeSeat();
+                mConnected.unlock();
+                mGameStarted.lock();
                 const bool isInRoom = checkFreeSeat && !isGameStarted;
+                mGameStarted.unlock();
+                //mPlayer.lock();
                 player->setInRoom(isInRoom);
-                mPlayers.unlock();
+                //mPlayer.unlock();
                 if (isInRoom) {
                     tcpQueue->push(ROOM_EVENT);
                     tcpServer.sendInt(tcpSocket, JOIN);
@@ -116,36 +129,40 @@ void GameServer::tcpSend(Player *player) {
                 break;
             }
             case ROOM_EVENT: {
-                mPlayers.lock();
+                mConnected.lock();
                 const int playersInRoom = countRoomPlayers();
                 for (vector<Player *>::iterator it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
                     roomEventSend((*it)->getTcpSocket(), playersInRoom);
                 }
+                mConnected.unlock();
                 cout << "TCP Send: Room event (tcpSocket) " << tcpSocket << endl << endl;
-                mPlayers.unlock();
                 break;
             }
             case DISCONNECT:
                 cout << "TCP Send: Disconnect, sending thread is saying bye-bye! (tcpSocket) " << tcpSocket << endl <<
                                                                                                                  endl;
-                mPlayers.lock();
+                //mPlayer.lock();
                 player->setThreadAlive(false);
-                mPlayers.unlock();
+                //mPlayer.unlock();
                 break;
             case START: {
-                mPlayers.lock();
+                mConnected.lock();
                 gamePlayers = getGamePlayers();
                 for (vector<Player*>::iterator it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
                     if ((*it)->isReady() && (*it)->isInRoom()) {
                         int playerTcpSocket = (*it)->getTcpSocket();
                         tcpServer.sendInt(playerTcpSocket, START);
+                        mGamePlayers.lock();
                         tcpServer.sendInt(playerTcpSocket, gamePlayers.size());
+                        mGamePlayers.unlock();
                     }
                 }
+                mConnected.unlock();
+                mGameStarted.lock();
                 isGameStarted = true;
+                mGameStarted.unlock();
                 udpServer.init();
                 cout << "TCP Send: Start (tcpSocket) " << tcpSocket << endl << endl;
-                mPlayers.unlock();
                 break;
             }
             case CONFIRM_UDP_MESSAGE:
@@ -153,7 +170,7 @@ void GameServer::tcpSend(Player *player) {
                 cout << "TCP Send: Udp message is confirmed (tcpSocket) " << tcpSocket << endl << endl;
                 break;
             case RESULTS:
-                cout << "RESULTS" << endl;
+                //cout << "RESULTS" << endl;
                 tcpServer.sendInt(tcpSocket, RESULTS);
                 tcpServer.sendString(tcpSocket, Board::getInstance().getWinner());
                 cout << "TCP Send: Winner nick is send! (tcpSocket) " << tcpSocket << " (nick) " <<
@@ -164,43 +181,53 @@ void GameServer::tcpSend(Player *player) {
     }
 }
 
-void GameServer::udpReceive(Player *player) {
-    SafeQueue <string> udpQueue;
-    player->setUdpQueue(&udpQueue);
+void GameServer::udpReceive() {
+    //cout << "UDP Receive: is running!" << endl << endl;
+    while(true) {
+        udpServer.receive(gamePlayers);
+    }
+}
+
+void GameServer::udpAction(Player *player) {
+    SafeQueue <string> udpSendQueue;
+    player->setUdpSendQueue(&udpSendQueue);
     thread udpSender(&GameServer::udpSend, this, player);
     udpSender.detach();
 
-    mPlayers.lock();
-    int num;
+    SafeQueue <string> *udpReceiveQueue = player->getUdpReceiveQueue();
+
+    string firstMsg;
     do {
-        num = udpServer.receiveInt(player);
-    } while (num != FIRST_UDP_MESSAGE);
+        firstMsg = udpReceiveQueue->get();
+    } while (firstMsg.substr(0, 1) != "F");
     cout << "UDP Receive: Udp connection is established! (nick) " << player->getNick() << endl << endl;
     player->getTcpQueue()->push(CONFIRM_UDP_MESSAGE);
-    mPlayers.unlock();
 
-    mBoard.lock();
+    //cout << "PLAYER: " << player->getNick() << endl;
+
+    //mBoard.lock();
     Board &board = Board::getInstance();
+    mGamePlayers.lock();
     board.start(getGamePlayers());
-    mBoard.unlock();
+    mGamePlayers.unlock();
+    // can cause a problem
+    //mBoard.unlock();
 
     bool isNowPlaying = true;
     while (isNowPlaying) {
-        string msg = udpServer.receive(player);
+        string msg = udpReceiveQueue->get();
+        //cout << player->getNick() << " " << player->getSockAddr().sin_addr.s_addr << " " << msg << endl;
         if (msg.substr(0, 1) == "L") {
-            mPlayers.lock();
             player->setTurn(-1);
-            mPlayers.unlock();
+            //cout << "UDP RECEIVER LEFT " << player->getNick() << endl;
         }
         else if (msg.substr(0, 1) == "R") {
-            mPlayers.lock();
             player->setTurn(1);
-            mPlayers.unlock();
+            //cout << "UDP RECEIVER RIGHT " << player->getNick() << endl;
         }
         else if (msg.substr(0, 1) == "S") {
-            mPlayers.lock();
             player->setTurn(0);
-            mPlayers.unlock();
+            //cout << "UDP RECEIVER STRAIGHT " << player->getNick() << endl;
         }
         isNowPlaying = player->isNowPlaying();
         //cout << "UDP Receive: (msg) " << msg << " (length) " << msg.length() << endl << endl;
@@ -208,7 +235,9 @@ void GameServer::udpReceive(Player *player) {
 }
 
 void GameServer::udpSend(Player *player) {
-    SafeQueue<string> *udpQueue = player->getUdpQueue();
+    //mPlayer.lock();
+    SafeQueue<string> *udpQueue = player->getUdpSendQueue();
+    //mPlayer.unlock();
     bool isNowPlaying = true;
     while (isNowPlaying) {
         string msg = udpQueue->get();
@@ -222,6 +251,8 @@ void GameServer::udpSend(Player *player) {
 void GameServer::run() {
     cout << "Server started running!" << endl;
     tcpServer.init();
+    thread udpReceiver(&GameServer::udpReceive, this);
+    udpReceiver.detach();
     while(true) {
         sockaddr_in clientSockAddr;
         int clientSocket = tcpServer.clientAccept(&clientSockAddr);
@@ -280,9 +311,9 @@ std::vector <Player*> GameServer::getGamePlayers() {
     return result;
 }
 
-void GameServer::deletePlayer(Player player) {
+void GameServer::deletePlayer(Player *player) {
     std::vector<Player *>::iterator foundPlayer;
-    int tcpSocket = player.getTcpSocket();
+    int tcpSocket = player->getTcpSocket();
     for (std::vector<Player*>::iterator it = connectedPlayers.begin(); it != connectedPlayers.end(); ++it) {
         if((*it)->getTcpSocket() == tcpSocket) {
             foundPlayer = it;

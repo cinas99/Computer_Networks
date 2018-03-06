@@ -31,12 +31,14 @@ void Board::threadDrawing() {
 void Board::threadGenerateLines() {
     while (run) {
         std::vector <PointWrapper> newPoints;
+        m.lock();
         for (int i=0; i<currentNumberOfPlayers; i++) {
             if (player[i]->isNowPlaying()) {
                 Point point = player[i]->generateNextLine();
                 newPoints.emplace_back(PointWrapper(i, player[i]->getVisitedSize() - 1, point));
             }
         }
+        m.unlock();
         sendPoints(newPoints);
         checkCollision();
         std::this_thread::sleep_for(std::chrono::milliseconds(KEYFRAME_DURATION_TIME));
@@ -47,8 +49,9 @@ void Board::threadGenerateLines() {
 void Board::sendPoints(std::vector <PointWrapper> newPoints) {
     for (std::vector<Player *>::iterator it = player.begin(); it != player.end(); ++it) {
         for (std::vector<PointWrapper>::iterator point = newPoints.begin(); point != newPoints.end(); ++point) {
-            string msg = prepareMessage(point->getPlayerNumber(), point->getPointNumber(), point->getPoint());
-            (*it)->getUdpQueue()->push(msg);
+            std::string msg = prepareMessage(point->getPlayerNumber(), point->getPointNumber(), point->getPoint());
+            SafeQueue <std::string> *udpQueue = (*it)->getUdpSendQueue();
+            udpQueue->push(msg);
         }
     }
 }
@@ -63,6 +66,7 @@ std::string Board::prepareMessage(int playerNumber, int pointNumber, Point point
 }
 
 void Board::start(std::vector <Player*> player) {
+    m.lock();
     this->currentNumberOfPlayers++;
     int size = player.size();
     if (this->currentNumberOfPlayers == size) {
@@ -71,12 +75,13 @@ void Board::start(std::vector <Player*> player) {
         this->numberOfPlayers = player.size();
 
         initPlayers(size);
-        thread gapGenerator(&Board::threadDrawing, this);
+        std::thread gapGenerator(&Board::threadDrawing, this);
         gapGenerator.detach();
-        thread lineGenerator(&Board::threadGenerateLines, this);
+        std::thread lineGenerator(&Board::threadGenerateLines, this);
         lineGenerator.detach();
         std::cout << "Board:start() is running!" << std::endl << std::endl;
     }
+    m.unlock();
 }
 
 void Board::initPlayers(const int maxNumberOfPlayers) {
@@ -156,31 +161,31 @@ bool Board::areIntersecting(Point p1, Point p2, Point q1, Point q2) {
         double x = (qb - pb) / (pa - qa);
         double y = pa * x + pb;
         // check if the point belongs to the sections
-        bool pCondition = min(p1.getX(), p2.getX()) <= x && x <= max(p1.getX(), p2.getX())
-                          && min(p1.getY(), p2.getY()) <= y && y <= max(p1.getY(), p2.getY());
-        bool qCondition = min(q1.getX(), q2.getX()) <= x && x <= max(q1.getX(), q2.getX())
-                          && min(q1.getY(), q2.getY()) <= y && y <= max(q1.getY(), q2.getY());
+        bool pCondition = std::min(p1.getX(), p2.getX()) <= x && x <= std::max(p1.getX(), p2.getX())
+                          && std::min(p1.getY(), p2.getY()) <= y && y <= std::max(p1.getY(), p2.getY());
+        bool qCondition = std::min(q1.getX(), q2.getX()) <= x && x <= std::max(q1.getX(), q2.getX())
+                          && std::min(q1.getY(), q2.getY()) <= y && y <= std::max(q1.getY(), q2.getY());
         result = pCondition && qCondition;
     } else if (p1.getX() == p2.getX() && q1.getX() == q2.getX()) {
-        result = p1.getX() == q1.getX() && (min(p1.getY(), p2.getY()) <= max(q1.getY(), q2.getY())
-                                            || min(q1.getY(), q2.getY()) <= max(p1.getY(), p2.getY()));
+        result = p1.getX() == q1.getX() && (std::min(p1.getY(), p2.getY()) <= std::max(q1.getY(), q2.getY())
+                                            || std::min(q1.getY(), q2.getY()) <= std::max(p1.getY(), p2.getY()));
     } else if (p1.getX() == p2.getX()) {
         double qa = (q1.getY() - q2.getY()) / (q1.getX() - q2.getX());
         double qb = q1.getY() - qa * q1.getX();
         double x = p1.getX();
         double y = qa * x + qb;
-        bool pCondition = min(p1.getY(), p2.getY()) <= x && x <= max(p1.getY(), p2.getY());
-        bool qCondition = min(q1.getX(), q2.getX()) <= x && x <= max(q1.getX(), q2.getX())
-                          && min(q1.getY(), q2.getY()) <= y && y <= max(q1.getY(), q2.getY());
+        bool pCondition = std::min(p1.getY(), p2.getY()) <= x && x <= std::max(p1.getY(), p2.getY());
+        bool qCondition = std::min(q1.getX(), q2.getX()) <= x && x <= std::max(q1.getX(), q2.getX())
+                          && std::min(q1.getY(), q2.getY()) <= y && y <= std::max(q1.getY(), q2.getY());
         result = pCondition && qCondition;
     } else { // (q1.getX() == q2.getX())
         double pa = (p1.getY() - p2.getY()) / (p1.getX() - p2.getX());
         double pb = p1.getY() - pa * p1.getX();
         double x = q1.getX();
         double y = pa * q1.getX() + pb;
-        bool pCondition = min(p1.getX(), p2.getX()) <= x && x <= max(p1.getX(), p2.getX())
-                          && min(p1.getY(), p2.getY()) <= y && y <= max(p1.getY(), p2.getY());
-        bool qCondition = min(q2.getX(), q2.getY()) <= x && x <= max(q2.getX(), q2.getY());
+        bool pCondition = std::min(p1.getX(), p2.getX()) <= x && x <= std::max(p1.getX(), p2.getX())
+                          && std::min(p1.getY(), p2.getY()) <= y && y <= std::max(p1.getY(), p2.getY());
+        bool qCondition = std::min(q2.getX(), q2.getY()) <= x && x <= std::max(q2.getX(), q2.getY());
         result = pCondition && qCondition;
     }
     return result;
@@ -189,12 +194,12 @@ bool Board::areIntersecting(Point p1, Point p2, Point q1, Point q2) {
 void Board::checkCollision() {
     for (int i = 0; i < numberOfPlayers; i++) {
         if (!player[i]->isNowPlaying()) continue;
-        const vector<Point> iVisited = player[i]->getVisited();
+        const std::vector<Point> iVisited = player[i]->getVisited();
         if (iVisited.size() > 1) {
             Point last = iVisited.at(iVisited.size() - 1);
             Point nextToLast = iVisited.at(iVisited.size() - 2);
             for (int j = 0; j < numberOfPlayers; j++) {
-                const vector<Point> jVisited = player[j]->getVisited();
+                const std::vector<Point> jVisited = player[j]->getVisited();
                 const int sizeToCheck = (i == j) ? jVisited.size() - 3 : jVisited.size() - 1;
                 for (int k = 0; k < sizeToCheck; k++) {
                     Point p1 = jVisited.at(k);
@@ -211,10 +216,6 @@ void Board::checkCollision() {
         }
     }
 }
-
-
-//ShowResults - przemyslec i gdzies dokomponowac
-// ? w Serwerze //TODO LATER //
 
 std::string Board::getWinner() {
     return winner;
@@ -236,20 +237,3 @@ void Board::sendResults() {
         tcpQueue->push(RESULTS);
     }
 }
-
-/*
-void Board::sendResults() {
-    int winnerIndex = -1;
-    for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-        if (player[i].isNowPlaying()) {
-            winnerIndex = i;
-        }
-    }
-    Alert alert = new Alert(Alert.AlertType.INFORMATION); //alert TODO
-    alert.setHeaderText(null);
-    alert.setTitle(TITLE);
-    alert.setContentText("Player " + (winnerIndex+1) + " won!");
-    timeline.stop();
-    alert.show();
-}
-*/

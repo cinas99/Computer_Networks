@@ -19,19 +19,20 @@ private:
     const long MAX_TIME_OF_DRAWING = 4000; // milliseconds
     const long MIN_TIME_OF_DELAY = 200; // milliseconds
     const long MAX_TIME_OF_DELAY = 400; // milliseconds
-    const int KEYFRAME_DURATION_TIME = 26; // milliseconds
+    const int KEYFRAME_DURATION_TIME = 15; // milliseconds
     static const int WIDTH = 900;
     static const int HEIGHT = 700;
 
     Board();
     Board(Board const&);
     void operator=(Board const&);
+    std::mutex m;
 
-    int numberOfPlayers;
-    int currentNumberOfPlayers;
-    std::vector <Player*> player;
-    bool run;
-    std::string winner;
+    int numberOfPlayers; // parallel access
+    int currentNumberOfPlayers; // parallel access
+    std::vector <Player*> player; // parallel access
+    bool run; // parallel access
+    std::string winner; // parallel access
 public:
     static Board& getInstance() {
         static Board instance;

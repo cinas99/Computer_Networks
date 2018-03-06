@@ -25,32 +25,36 @@
 
 #define MAX_ROOM_SEATS 4
 
-using namespace std;
+//using namespace std;
 
 class GameServer {
 private:
     TcpServer tcpServer;
     UdpServer udpServer;
-    vector <Player*> connectedPlayers;
-    vector <Player*> gamePlayers;
-    bool isGameStarted;
-    mutex mPlayers;
-    mutex mBoard;
-
-public:
-    GameServer();
-    void tcpReceive(int tcpSocket, sockaddr_in clientSockAddr);
-    void tcpSend(Player *player);
-    void udpReceive(Player *player);
-    void udpSend(Player *player);
-    void run();
+    std::vector <Player*> connectedPlayers; // parallel access
+    std::vector <Player*> gamePlayers; // parallel access
+    bool isGameStarted; // parallel access
+    std::mutex mConnected;
+    std::mutex mGamePlayers;
+    std::mutex mGameStarted;
+    //std::mutex mPlayer;
+    //mutex mBoard;
 
     void roomEventSend(int tcpSocket, int playersInRoom);
     bool isEveryoneReady();
     bool isFreeSeat();
     int countRoomPlayers();
     std::vector <Player*> getGamePlayers();
-    void deletePlayer(Player player);
+    void deletePlayer(Player *player);
+
+public:
+    GameServer();
+    void tcpReceive(int tcpSocket, sockaddr_in clientSockAddr);
+    void tcpSend(Player *player);
+    void udpAction(Player *player);
+    void udpReceive();
+    void udpSend(Player *player);
+    void run();
 };
 
 #endif //SERVER_CURVE_FEVER_GAME_SERVER_H

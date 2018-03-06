@@ -3,7 +3,7 @@
 
 class Point {
 private:
-    bool gap;
+    bool gap; // parallel access
     double x;
     double y;
 public:
