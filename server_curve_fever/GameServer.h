@@ -25,8 +25,6 @@
 
 #define MAX_ROOM_SEATS 4
 
-//using namespace std;
-
 class GameServer {
 private:
     TcpServer tcpServer;
@@ -37,8 +35,6 @@ private:
     std::mutex mConnected;
     std::mutex mGamePlayers;
     std::mutex mGameStarted;
-    //std::mutex mPlayer;
-    //mutex mBoard;
 
     void roomEventSend(int tcpSocket, int playersInRoom);
     bool isEveryoneReady();

@@ -51,7 +51,6 @@ public:
     void startDrawing();
     void stopDrawing();
 
-    //static int getNumberOfPlayers();
     static bool outOfBounds(Point p);
     static bool areIntersecting(Point p1, Point p2, Point q1, Point q2);
     void checkCollision();

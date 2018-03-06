@@ -4,7 +4,7 @@ TcpServer::TcpServer() {
 }
 
 void TcpServer::init() {
-    int nFoo = 1;
+    int nFoo = 1;//, val = 1;
 
     /* address structure */
     memset(&sockServer, 0, sizeof(struct sockaddr));
@@ -20,6 +20,7 @@ void TcpServer::init() {
         exit(1);
     }
     setsockopt(nSocket, SOL_SOCKET, SO_REUSEADDR, (char*)&nFoo, sizeof(nFoo));
+    //setsockopt(nSocket, SOL_SOCKET, SO_KEEPALIVE, (char*)&val, sizeof(val));
 
     /* bind a name to a socket */
     int nBind = bind(nSocket, (struct sockaddr*)&sockServer, sizeof(struct sockaddr));
@@ -76,6 +77,9 @@ int TcpServer::receiveInt(int tcpSocket) {
         if (received > 0) {
             buf += received;
             left -= received;
+        }
+        else if (received < 0) {
+            return -1;
         }
     } while (left > 0);
     return ntohl(result);

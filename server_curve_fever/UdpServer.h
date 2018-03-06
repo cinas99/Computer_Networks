@@ -24,13 +24,12 @@ class UdpServer {
 private:
     sockaddr_in sockServer;
     int nSocket;
-    //std::mutex m;
 
 public:
     UdpServer();
     int init();
     void receive(std::vector <Player *> player);
-    //int receiveInt(Player *player);
+    int receiveInt(Player *player);
     void send(Player *player, std::string msg);
     void closeSocket();
 };
