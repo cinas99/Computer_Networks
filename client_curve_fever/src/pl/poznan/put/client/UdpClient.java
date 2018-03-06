@@ -23,7 +23,7 @@ public class UdpClient {
             while (true) {
                 try {
                     String msg = receive();
-                    System.out.println("Udp receive: (message) " + msg + "\n");
+                    //System.out.println("Udp receive: (message) " + msg + "\n");
                     Converter.convert(msg);
                     Board.addPoint(Converter.getPlayerNumber(), Converter.getPointNumber(), Converter.getX(), Converter.getY(), Converter.isGap());
                 } catch (IOException e) {

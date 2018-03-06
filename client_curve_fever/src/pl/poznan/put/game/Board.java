@@ -21,7 +21,6 @@ import javafx.scene.paint.Color;
 import java.util.List;
 
 import javafx.util.Duration;
-import pl.poznan.put.client.Message;
 import pl.poznan.put.client.TcpClient;
 import pl.poznan.put.client.UdpClient;
 
@@ -37,8 +36,8 @@ public class Board {
     private static final double BOUNDS_WIDTH = 4.0;
     private static final String TITLE = "Curve fever!";
     private static final Color BOUNDS_COLOR = Color.BLACK;
-    private final Timeline lineDrawer = new Timeline();
-    private final Timeline keySender = new Timeline();
+    private static final Timeline lineDrawer = new Timeline();
+    private static final Timeline keySender = new Timeline();
     private Group root = new Group();
     private Scene scene = new Scene(root, WIDTH, HEIGHT);
     private Canvas canvas = new Canvas(WIDTH, HEIGHT);
@@ -57,6 +56,7 @@ public class Board {
     private static final String LEFT = "L";
     private static final String RIGHT = "R";
     private static final String STRAIGHT = "S";
+    private static final String FIRST_MESSAGE = "F";
 
     public Board(TcpClient tcpClient, UdpClient udpClient) throws IOException {
         this.tcpClient = tcpClient;
@@ -67,9 +67,6 @@ public class Board {
         primaryStage.setTitle(TITLE);
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        //StackPane layout = new StackPane();
-        //layout.getChildren().add(label);
 
         primaryStage.setOnCloseRequest((WindowEvent event) -> {
             try {
@@ -83,7 +80,8 @@ public class Board {
     public void start() {
         while(!connectionEstablished) {
             try {
-                udpClient.send("F");
+                udpClient.send(FIRST_MESSAGE);
+
                 Thread.sleep(WAIT_FOR_UDP_CONFIRM);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -172,8 +170,8 @@ public class Board {
                 alert.show();
             }
         });
-        //lineDrawer.stop(); HAVE TO BE PUT SOMEWHERE ELSE
-        //keySender.stop();
+        lineDrawer.stop();
+        keySender.stop();
     }
 
     private void drawLines(Player player) {

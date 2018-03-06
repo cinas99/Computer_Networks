@@ -71,6 +71,7 @@ public class TcpClient {
         sock = new Socket();
         int port = Integer.parseInt(props.getProperty("tcp_port"));
         String ip = props.getProperty("ip");
+        //sock.setKeepAlive(true);
         sock.connect(new InetSocketAddress(ip, port));
         dataInputStream = new DataInputStream(sock.getInputStream());
         dataOutputStream = new DataOutputStream(sock.getOutputStream());
